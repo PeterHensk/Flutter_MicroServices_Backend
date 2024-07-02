@@ -1,0 +1,28 @@
+### create station
+POST http://localhost:8082/station
+Content-Type: application/json
+
+{
+  "stationIdentifier": "station-123",
+  "location": {
+    "locationId": "location-123",
+    "country": "USA",
+    "city": "New York",
+    "postalCode": "10001",
+    "addressLine1": "123 Main St",
+    "parkingName": "Main St Parking"
+  },
+  "chargingPorts": [
+    {
+      "chargingPortId": "port-123",
+      "portIdentifier": "1",
+      "status": "AVAILABLE"
+    },
+    {
+      "portIdentifier": "2",
+      "status": "IN_USE"
+    }
+  ],
+  "image": "/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAAQDAwQDAwQEBAQF",
+  "contentType": "image/png"
+}

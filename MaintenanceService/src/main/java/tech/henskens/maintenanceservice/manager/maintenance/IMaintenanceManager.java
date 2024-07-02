@@ -1,0 +1,18 @@
+package tech.henskens.maintenanceservice.manager.maintenance;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import tech.henskens.maintenanceservice.dto.maintenance.MaintenanceDto;
+import tech.henskens.maintenanceservice.dto.maintenance.MaintenanceWithStationAndSessionsDto;
+
+public interface IMaintenanceManager {
+    MaintenanceDto createMaintenance(MaintenanceDto maintenanceDto);
+
+    MaintenanceDto updateMaintenance(MaintenanceDto maintenanceDto);
+
+    Page<MaintenanceDto> getAllMaintenances(Pageable pageable);
+
+    void deleteMaintenance(Long id);
+
+    Page<MaintenanceWithStationAndSessionsDto> getAllMaintenancesWithStationAndSessions(Pageable pageable);
+}

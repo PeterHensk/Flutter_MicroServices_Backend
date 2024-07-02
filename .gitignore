@@ -1,0 +1,70 @@
+# IDEs and Editor files
+*.iml
+*.ipr
+*.iws
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.vscode/
+
+# Build output
+/build/
+/target/
+/out/
+
+# Dependency directories
+/.m2/
+/.gradle/
+/build/
+
+# Log files
+*.log
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Java specific files
+*.class
+*.jar
+*.war
+*.ear
+
+# JUnit test reports
+/test-outputs/
+test-results/
+
+# Java coverage reports
+/coverage/
+
+# Eclipse project settings
+.project
+.classpath
+.settings/
+
+# Maven specific
+/.mvn/
+mvnw
+mvnw.cmd
+
+# Gradle specific
+.gradle/
+build/
+
+# SonarQube specific
+.sonar/
+
+# Local environment configurations
+.env
+*.env
+
+# Application configuration files
+application.yml
+application.properties
+firebase-service-account.json
+
+# Other
+*.swp
+*.swo
+*.sublime-workspace
+*.sublime-project

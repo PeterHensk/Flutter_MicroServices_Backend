@@ -1,0 +1,19 @@
+### POST request to /whoami endpoint
+POST http://localhost:8081/user/whoami
+Content-Type: application/json
+Authorization: "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjVkNjE3N2E5Mjg2ZDI1Njg0NTI2OWEzMTM2ZDNmNjY0MjZhNGQ2NDIiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiUGV0ZXIgSGVuc2tlbnMiLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jSUw5bGNBaTNIbXA4QlBVOERIdE1oVE9BYXp2STFnbGE1b0kyZnJpYkFXd0FnRUp3PXM5Ni1jIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL3VzZXJzZXJ2aWNlLTQyMzUwNiIsImF1ZCI6InVzZXJzZXJ2aWNlLTQyMzUwNiIsImF1dGhfdGltZSI6MTcxNjcyMjk5OSwidXNlcl9pZCI6IkswN21EU01LNXFhRW42TldScEVyMXFTY1hwRjMiLCJzdWIiOiJLMDdtRFNNSzVxYUVuNk5XUnBFcjFxU2NYcEYzIiwiaWF0IjoxNzE2NzIyOTk5LCJleHAiOjE3MTY3MjY1OTksImVtYWlsIjoicGV0ZXIuaGVuc2tlbnNAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZ29vZ2xlLmNvbSI6WyIxMDA5NDcxNDIwNzU4NDkzMzA0NzciXSwiZW1haWwiOlsicGV0ZXIuaGVuc2tlbnNAZ21haWwuY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoiZ29vZ2xlLmNvbSJ9fQ.MpJUobw0lpyBnNgMYWCu1m4ZvTauJuJFqdw8lJ6aPMyXmGqXT2t-rb_2suxF-xtJy85zzutNV0inreX9CLe1hJHOc6aDjkQU2I0WuysBN005KXhxA3Fw8mvd4loNGPOkzBzK2Tefa1u-TarvZdb8XkuxMo9WIy26Yd197W8rtHbyQC6RAPUz9srPVxeCxBJRVVNXVsR02V9JN_bxK3Af883HnHd8kquOWaDj5BmEvibuipjli8mtIJCkzApzB6s9aWhzRjTa96afYT3UE2K7WyeOh4c2k-A0UvvGYYXyoMgocei6GTEzHpnK-XNKvmnUwtsejKs_Im_bXs8JU5sybQ"
+
+### GET request to /user endpoint with page parameters
+GET http://localhost:8081/user?page=3&size=10
+
+### PUT request to /user/${id} endpoint to update a user
+PUT http://localhost:8081/user/12
+Content-Type: application/json
+
+{
+  "emailAddress": "wouters.lisa@gmail.com",
+  "firstName": "Lisa-Marie",
+  "lastName": "Wouters",
+  "role": "VIEWER",
+  "updated": "2024-05-01T00:00:00"
+}

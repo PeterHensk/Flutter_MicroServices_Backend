@@ -3,14 +3,14 @@ GET http://localhost:8082/station
 Content-Type: application/json
 
 ### get station by id
-GET http://localhost:8080/station/station-123
+GET http://localhost:8082/station/station-1
 Content-Type: application/json
 
 ### get station with a port
-GET http://localhost:8080/station/station-123/port/port-1
+GET http://localhost:8082/station/station-123/port/port-1
 
 ### update a port status
-PUT http://localhost:8080/station/station-123/port/port-1
+PUT http://localhost:8082/station/station-123/port/port-1
 Content-Type: application/json
 
 {

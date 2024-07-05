@@ -23,18 +23,6 @@ public class MaintenanceMapper {
         return dto;
     }
 
-    public Maintenance toMaintenance(MaintenanceDto dto) {
-        Maintenance maintenance = new Maintenance();
-        maintenance.setId(dto.getId());
-        maintenance.setStationIdentifier(dto.getStationIdentifier());
-        maintenance.setIssueCategory(dto.getIssueCategory());
-        maintenance.setIssueDescription(dto.getIssueDescription());
-        maintenance.setCreationDate(dto.getCreationDate());
-        maintenance.setMaintenanceDate(dto.getMaintenanceDate());
-        maintenance.setStatus(dto.getStatus());
-        return maintenance;
-    }
-
     public void updateMaintenance(Maintenance existingMaintenance, MaintenanceDto maintenanceDto) {
         if (maintenanceDto.getIssueCategory() != null) {
             existingMaintenance.setIssueCategory(maintenanceDto.getIssueCategory());

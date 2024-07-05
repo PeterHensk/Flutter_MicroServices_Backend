@@ -18,7 +18,7 @@ public class StationManager implements IStationManager {
 
     public Optional<ChargingPortDto> getChargingPort(String stationIdentifier, String portIdentifier) {
         String url = String.format("%s/station/%s/port/%s", this.stationdbBackendUrl, stationIdentifier, portIdentifier);
-        ChargingPortDto chargingPortDto = (ChargingPortDto)this.restTemplate.getForObject(url, ChargingPortDto.class, new Object[0]);
+        ChargingPortDto chargingPortDto = this.restTemplate.getForObject(url, ChargingPortDto.class);
         return Optional.ofNullable(chargingPortDto);
     }
 }

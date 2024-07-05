@@ -1,6 +1,7 @@
 package tech.henskens.sessionservice.mapper.session;
 
 import java.time.LocalDateTime;
+
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 import tech.henskens.sessionservice.dto.session.DateRangeDto;
@@ -14,7 +15,6 @@ public class SessionMapper {
 
     public SessionDto toSessionDto(Session session) {
         SessionDto dto = new SessionDto();
-        dto.setId(session.getId());
         dto.setCarId(session.getCar().getId());
         dto.setUserId(session.getUser().getId());
         dto.setKwh(session.getKwh());
@@ -27,7 +27,6 @@ public class SessionMapper {
 
     public Session toSession(SessionDto dto) {
         Session session = new Session();
-        session.setId(dto.getId());
         session.setKwh(dto.getKwh());
         session.setStationIdentifier(dto.getStationIdentifier());
         session.setPortIdentifier(dto.getPortIdentifier());
@@ -40,27 +39,18 @@ public class SessionMapper {
         if (dto.getKwh() != null) {
             session.setKwh(dto.getKwh());
         }
-
         if (dto.getStationIdentifier() != null) {
             session.setStationIdentifier(dto.getStationIdentifier());
         }
-
         if (dto.getPortIdentifier() != null) {
             session.setPortIdentifier(dto.getPortIdentifier());
         }
-
         if (dto.getStarted() != null) {
             session.setStarted(dto.getStarted());
         }
-
         if (dto.getEnded() != null) {
             session.setEnded(dto.getEnded());
         }
-
-    }
-
-    public Pair<LocalDateTime, LocalDateTime> toLocalDateTimePair(DateRangeDto dateRangeDto) {
-        return Pair.of(dateRangeDto.getStartDate(), dateRangeDto.getEndDate());
     }
 }
 

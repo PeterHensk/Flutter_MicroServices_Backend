@@ -17,7 +17,7 @@ public class StationManager implements IStationManager {
 
     public StationDto getStation(String stationIdentifier) {
         String url = String.format("%s/station/%s", this.stationdbBackendUrl, stationIdentifier);
-        StationDto stationDto = (StationDto)this.restTemplate.getForObject(url, StationDto.class, new Object[0]);
+        StationDto stationDto = this.restTemplate.getForObject(url, StationDto.class);
         System.out.println(stationDto);
         return stationDto;
     }

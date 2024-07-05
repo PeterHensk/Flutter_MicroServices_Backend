@@ -2,6 +2,7 @@ package tech.henskens.sessionservice.manager.session;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 import tech.henskens.sessionservice.dto.session.DateRangeDto;
 import tech.henskens.sessionservice.dto.session.SessionDto;
@@ -36,40 +37,30 @@ public class SessionManager implements ISessionManager {
         if (!"AVAILABLE".equals(portStatus)) {
             throw new IllegalArgumentException("Port is not available for charging.");
         } else {
-            Car car = (Car)this.carRepository.findById(sessionDto.getCarId()).orElseThrow(() -> {
-                return new IllegalArgumentException("Car not found");
-            });
-            User user = (User)this.userRepository.findById(sessionDto.getUserId()).orElseThrow(() -> {
-                return new IllegalArgumentException("User not found");
-            });
+            Car car = this.carRepository.findById(sessionDto.getCarId()).orElseThrow(() -> new IllegalArgumentException("Car not found"));
+            User user = this.userRepository.findById(sessionDto.getUserId()).orElseThrow(() -> new IllegalArgumentException("User not found"));
             Session session = this.sessionMapper.toSession(sessionDto);
             session.setCar(car);
             session.setUser(user);
-            session = (Session)this.sessionRepository.save(session);
+            session = this.sessionRepository.save(session);
             return this.sessionMapper.toSessionDto(session);
         }
     }
 
     public SessionDto updateSession(Long id, SessionDto sessionDto) {
-        Session session = (Session)this.sessionRepository.findById(id).orElseThrow(() -> {
-            return new IllegalArgumentException("Session not found.");
-        });
+        Session session = this.sessionRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Session not found."));
         if (sessionDto.getCarId() != null) {
-            Car car = (Car)this.carRepository.findById(sessionDto.getCarId()).orElseThrow(() -> {
-                return new IllegalArgumentException("Car not found");
-            });
+            Car car = this.carRepository.findById(sessionDto.getCarId()).orElseThrow(() -> new IllegalArgumentException("Car not found"));
             session.setCar(car);
         }
 
         if (sessionDto.getUserId() != null) {
-            User user = (User)this.userRepository.findById(sessionDto.getUserId()).orElseThrow(() -> {
-                return new IllegalArgumentException("User not found");
-            });
+            User user = this.userRepository.findById(sessionDto.getUserId()).orElseThrow(() -> new IllegalArgumentException("User not found"));
             session.setUser(user);
         }
 
         this.sessionMapper.updateSessionFromDto(sessionDto, session);
-        session = (Session)this.sessionRepository.save(session);
+        session = this.sessionRepository.save(session);
         return this.sessionMapper.toSessionDto(session);
     }
 
@@ -79,9 +70,7 @@ public class SessionManager implements ISessionManager {
 
     private String checkPortAvailability(SessionDto sessionDto) {
         Optional<ChargingPortDto> chargingPortOptional = this.stationManager.getChargingPort(sessionDto.getStationIdentifier(), sessionDto.getPortIdentifier());
-        ChargingPortDto chargingPort = (ChargingPortDto)chargingPortOptional.orElseThrow(() -> {
-            return new NoSuchElementException("Charging port not found with id: " + sessionDto.getPortIdentifier());
-        });
+        ChargingPortDto chargingPort = chargingPortOptional.orElseThrow(() -> new NoSuchElementException("Charging port not found with id: " + sessionDto.getPortIdentifier()));
         return chargingPort.getStatus();
     }
 }

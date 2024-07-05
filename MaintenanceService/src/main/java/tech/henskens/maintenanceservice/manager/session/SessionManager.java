@@ -19,8 +19,8 @@ public class SessionManager implements ISessionManager {
 
     public SessionCountDto getSessionCount(String stationIdentifier, LocalDateTime startDate, LocalDateTime endDate) {
         String url = String.format("%s/session/count?startDate=%s&endDate=%s&stationIdentifier=%s", this.sessionBackendUrl, startDate.toString(), endDate.toString(), stationIdentifier);
-        ResponseEntity<SessionCountDto> response = this.restTemplate.getForEntity(url, SessionCountDto.class, new Object[0]);
-        SessionCountDto sessionCountDto = (SessionCountDto)response.getBody();
+        ResponseEntity<SessionCountDto> response = this.restTemplate.getForEntity(url, SessionCountDto.class);
+        SessionCountDto sessionCountDto = response.getBody();
         System.out.println(sessionCountDto);
         return sessionCountDto;
     }

@@ -1,10 +1,12 @@
 package tech.henskens.sessionservice.manager.user;
 
 import com.google.firebase.auth.FirebaseToken;
+
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,10 +31,10 @@ public class UserManager implements IUserManager {
 
     public CreateUserDto handleUser(FirebaseToken decodedToken) {
         String email = decodedToken.getEmail();
-        String fullName = (String)decodedToken.getClaims().get("name");
+        String fullName = (String) decodedToken.getClaims().get("name");
         String[] nameParts = fullName.split(" ");
         String firstName = nameParts[0];
-        String lastName = nameParts.length > 1 ? String.join(" ", (CharSequence[])Arrays.copyOfRange(nameParts, 1, nameParts.length)) : "";
+        String lastName = nameParts.length > 1 ? String.join(" ", Arrays.copyOfRange(nameParts, 1, nameParts.length)) : "";
         CreateUserDto createUserDto = new CreateUserDto();
         createUserDto.setEmailAddress(email);
         createUserDto.setFirstName(firstName);
@@ -58,15 +60,13 @@ public class UserManager implements IUserManager {
     }
 
     public GetUserDto updateUser(Long id, GetUserDto userDto) {
-        User user = (User)this.userRepository.findById(id).orElseThrow(() -> {
-            return new NoSuchElementException("User not found with id " + id);
-        });
+        User user = this.userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("User not found with id " + id));
         user.setEmailAddress(userDto.getEmailAddress());
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
         user.setRole(userDto.getRole());
         user.setUpdated(userDto.getUpdated());
-        User updatedUser = (User)this.userRepository.save(user);
+        User updatedUser = this.userRepository.save(user);
         return this.userToGetUserDtoMapper.userToGetUserDto(updatedUser);
     }
 }

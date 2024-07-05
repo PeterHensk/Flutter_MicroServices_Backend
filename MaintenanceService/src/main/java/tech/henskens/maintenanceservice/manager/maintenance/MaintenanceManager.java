@@ -34,25 +34,23 @@ public class MaintenanceManager implements IMaintenanceManager {
     }
 
     public MaintenanceDto createMaintenance(MaintenanceDto maintenanceDto) {
-        Maintenance maintenance = this.maintenanceMapper.toMaintenance(maintenanceDto);
-        Maintenance savedMaintenance = (Maintenance)this.maintenanceRepository.save(maintenance);
+        Maintenance maintenance = this.maintenanceMapper.toMaintenanceDto(maintenanceDto);
+        Maintenance savedMaintenance = this.maintenanceRepository.save(maintenance);
         return this.maintenanceMapper.toMaintenanceDto(savedMaintenance);
     }
 
     public MaintenanceDto updateMaintenance(MaintenanceDto maintenanceDto) {
-        Maintenance existingMaintenance = (Maintenance)this.maintenanceRepository.findById(maintenanceDto.getId()).orElseThrow(() -> {
-            return new NoSuchElementException("Maintenance with id " + maintenanceDto.getId() + " not found");
-        });
+        Maintenance existingMaintenance = this.maintenanceRepository.findById(maintenanceDto.getId()).orElseThrow(() -> new NoSuchElementException("Maintenance with id " + maintenanceDto.getId() + " not found"));
         this.maintenanceMapper.updateMaintenance(existingMaintenance, maintenanceDto);
-        Maintenance updatedMaintenance = (Maintenance)this.maintenanceRepository.save(existingMaintenance);
+        Maintenance updatedMaintenance = this.maintenanceRepository.save(existingMaintenance);
         return this.maintenanceMapper.toMaintenanceDto(updatedMaintenance);
     }
 
     public Page<MaintenanceDto> getAllMaintenances(Pageable pageable) {
-        Page var10000 = this.maintenanceRepository.findAll(pageable);
-        MaintenanceMapper var10001 = this.maintenanceMapper;
-        Objects.requireNonNull(var10001);
-        return var10000.map(var10001::toMaintenanceDto);
+        Page<Maintenance> page = this.maintenanceRepository.findAll(pageable);
+        MaintenanceMapper mapper = this.maintenanceMapper;
+        Objects.requireNonNull(mapper);
+        return page.map(mapper::toMaintenanceDto);
     }
 
     public void deleteMaintenance(Long id) {
@@ -61,7 +59,7 @@ public class MaintenanceManager implements IMaintenanceManager {
 
     public Page<MaintenanceWithStationAndSessionsDto> getAllMaintenancesWithStationAndSessions(Pageable pageable) {
         Page<Maintenance> maintenances = this.maintenanceRepository.findAll(pageable);
-        List<MaintenanceWithStationAndSessionsDto> dtos = (List)maintenances.stream().map((maintenance) -> {
+        List<MaintenanceWithStationAndSessionsDto> dtos = maintenances.stream().map((maintenance) -> {
             StationDto station = this.stationManager.getStation(maintenance.getStationIdentifier());
             LocalDateTime startDate = maintenance.getCreationDate();
             Maintenance nextMaintenance = this.maintenanceRepository.findFirstByStationIdentifierAndCreationDateAfterOrderByCreationDate(maintenance.getStationIdentifier(), maintenance.getMaintenanceDate());
@@ -70,6 +68,6 @@ public class MaintenanceManager implements IMaintenanceManager {
             Integer totalCompletedSessions = totalCompletedSessionsDto != null ? totalCompletedSessionsDto.getCount() : 0;
             return this.maintenanceMapper.toMaintenanceWithStationAndSessionsDto(maintenance, station, totalCompletedSessions);
         }).collect(Collectors.toList());
-        return new PageImpl(dtos, pageable, maintenances.getTotalElements());
+        return new PageImpl<>(dtos, pageable, maintenances.getTotalElements());
     }
 }

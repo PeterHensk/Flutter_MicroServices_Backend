@@ -27,13 +27,13 @@ public class SessionController {
     @PostMapping
     public ResponseEntity<SessionDto> createSession(@RequestBody SessionDto sessionDto) {
         SessionDto createdSession = this.sessionManager.createSession(sessionDto);
-        return new ResponseEntity(createdSession, HttpStatus.CREATED);
+        return new ResponseEntity<>(createdSession, HttpStatus.CREATED);
     }
 
     @PutMapping({"/{id}"})
     public ResponseEntity<SessionDto> updateSession(@PathVariable Long id, @RequestBody SessionDto sessionDto) {
         SessionDto updatedSession = this.sessionManager.updateSession(id, sessionDto);
-        return new ResponseEntity(updatedSession, HttpStatus.OK);
+        return new ResponseEntity<>(updatedSession, HttpStatus.OK);
     }
 
     @GetMapping({"/count"})
@@ -42,7 +42,7 @@ public class SessionController {
         LocalDateTime endDate = LocalDateTime.parse(endDateStr);
         DateRangeDto dateRangeDto = new DateRangeDto(startDate, endDate, stationIdentifier);
         int count = this.sessionManager.countSessionsBetweenDates(dateRangeDto);
-        return new ResponseEntity(count, HttpStatus.OK);
+        return new ResponseEntity<>(count, HttpStatus.OK);
     }
 }
 

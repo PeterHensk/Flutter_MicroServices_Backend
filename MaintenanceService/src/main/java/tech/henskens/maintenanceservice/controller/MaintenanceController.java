@@ -30,34 +30,34 @@ public class MaintenanceController {
     @PostMapping
     public ResponseEntity<MaintenanceDto> createMaintenance(@RequestBody MaintenanceDto maintenanceDto) {
         MaintenanceDto createdMaintenance = this.maintenanceManager.createMaintenance(maintenanceDto);
-        return new ResponseEntity(createdMaintenance, HttpStatus.CREATED);
+        return new ResponseEntity<>(createdMaintenance, HttpStatus.CREATED);
     }
 
     @PutMapping({"/{id}"})
     public ResponseEntity<MaintenanceDto> updateMaintenance(@PathVariable Long id, @RequestBody MaintenanceDto maintenanceDto) {
         maintenanceDto.setId(id);
         MaintenanceDto updatedMaintenance = this.maintenanceManager.updateMaintenance(maintenanceDto);
-        return new ResponseEntity(updatedMaintenance, HttpStatus.OK);
+        return new ResponseEntity<>(updatedMaintenance, HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<Page<MaintenanceDto>> getAllMaintenances(@RequestParam int page, @RequestParam int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<MaintenanceDto> maintenances = this.maintenanceManager.getAllMaintenances(pageable);
-        return new ResponseEntity(maintenances, HttpStatus.OK);
+        return new ResponseEntity<>(maintenances, HttpStatus.OK);
     }
 
     @DeleteMapping({"/{id}"})
     public ResponseEntity<Void> deleteMaintenance(@PathVariable Long id) {
         this.maintenanceManager.deleteMaintenance(id);
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping({"/report"})
     public ResponseEntity<Page<MaintenanceWithStationAndSessionsDto>> getAllMaintenancesWithStationAndSessions(@RequestParam int page, @RequestParam int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<MaintenanceWithStationAndSessionsDto> maintenances = this.maintenanceManager.getAllMaintenancesWithStationAndSessions(pageable);
-        return new ResponseEntity(maintenances, HttpStatus.OK);
+        return new ResponseEntity<>(maintenances, HttpStatus.OK);
     }
 }
 

@@ -8,5 +8,4 @@ import lombok.*;
 @NoArgsConstructor
 public class StationDto {
     public String stationIdentifier;
-    public Location location;
 }

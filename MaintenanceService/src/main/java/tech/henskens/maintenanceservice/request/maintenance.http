@@ -1,0 +1,24 @@
+﻿### Create a mainenance record
+POST http://localhost:8083/maintenance
+Content-Type: application/json
+
+{
+  "stationIdentifier": "station-1",
+  "issueCategory": "ELECTRICAL",
+  "issueDescription": "The station is not charging the car",
+  "creationDate": "2021-06-01T12:00:00",
+  "maintenanceDate": "2021-06-01T12:00:00",
+  "status": "IN_PROGRESS"
+}
+
+### Update a maintenance record
+PUT http://localhost:8083/maintenance/1
+Content-Type: application/json
+
+{
+  "creationDate": "2024-03-15T12:00:00",
+  "maintenanceDate": "2024-04-25T12:00:00"
+}
+
+### Get report
+GET http://localhost:8083/maintenance/report?page=0&size=10&sort=creationDate,desc

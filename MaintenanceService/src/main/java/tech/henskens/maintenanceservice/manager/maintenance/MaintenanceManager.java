@@ -34,7 +34,7 @@ public class MaintenanceManager implements IMaintenanceManager {
     }
 
     public MaintenanceDto createMaintenance(MaintenanceDto maintenanceDto) {
-        Maintenance maintenance = this.maintenanceMapper.toMaintenanceDto(maintenanceDto);
+        Maintenance maintenance = this.maintenanceMapper.toMaintenance(maintenanceDto);
         Maintenance savedMaintenance = this.maintenanceRepository.save(maintenance);
         return this.maintenanceMapper.toMaintenanceDto(savedMaintenance);
     }

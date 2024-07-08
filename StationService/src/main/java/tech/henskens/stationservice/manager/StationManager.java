@@ -5,6 +5,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import tech.henskens.stationservice.dto.ChargingPortDto;
 import tech.henskens.stationservice.dto.ChargingPortStatusDto;
@@ -43,14 +46,10 @@ public class StationManager implements IStationManager {
         this.stationRepository.save(station);
     }
 
-    public List<StationDto> getAllStations() {
-        List<Station> stations = this.stationRepository.findAll();
-        Stream<Station> stream = stations.stream();
-        StationMapper mapper = this.stationMapper;
-        Objects.requireNonNull(mapper);
-        return stream.map(mapper::stationToDto).toList();
+    public Page<StationDto> getAllStations(Pageable pageable) {
+        Page<Station> stations = this.stationRepository.findAll(pageable);
+        return stations.map(this.stationMapper::stationToDto);
     }
-
     public Optional<ChargingPortDto> getChargingPort(String stationIdentifier, String portIdentifier) {
         Optional<ChargingPort> chargingPort = this.findChargingPort(stationIdentifier, portIdentifier);
         StationMapper mapper = this.stationMapper;

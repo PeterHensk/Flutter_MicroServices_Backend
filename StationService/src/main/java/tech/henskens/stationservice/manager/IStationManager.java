@@ -1,15 +1,17 @@
 package tech.henskens.stationservice.manager;
 
-import java.util.List;
 import java.util.Optional;
+
+import org.springframework.data.domain.Pageable;
 import tech.henskens.stationservice.dto.ChargingPortDto;
 import tech.henskens.stationservice.dto.ChargingPortStatusDto;
 import tech.henskens.stationservice.dto.StationDto;
+import org.springframework.data.domain.Page;
 
 public interface IStationManager {
     void createStation(StationDto stationDto);
 
-    List<StationDto> getAllStations();
+    Page<StationDto> getAllStations(Pageable pageable);
 
     Optional<ChargingPortDto> getChargingPort(String stationIdentifier, String portIdentifier);
 

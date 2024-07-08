@@ -1,5 +1,7 @@
 package tech.henskens.stationservice.controller;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,8 +36,8 @@ public class StationController {
     }
 
     @GetMapping
-    public ResponseEntity<List<StationDto>> getAllStations() {
-        List<StationDto> stations = stationManager.getAllStations();
+    public ResponseEntity<Page<StationDto>> getAllStations(Pageable pageable) {
+        Page<StationDto> stations = stationManager.getAllStations(pageable);
         return new ResponseEntity<>(stations, HttpStatus.OK);
     }
 

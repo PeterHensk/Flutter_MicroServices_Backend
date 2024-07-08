@@ -1,5 +1,5 @@
 ### get all stations
-GET http://localhost:8082/station
+GET http://localhost:8082/station?page=0&size=10&sort=creationDate,desc
 Content-Type: application/json
 
 ### get station by id

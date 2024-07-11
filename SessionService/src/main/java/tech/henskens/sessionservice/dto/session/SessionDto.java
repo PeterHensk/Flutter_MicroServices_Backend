@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 public class SessionDto {
+    private Long id;
     private CarDto car;
     private Long userId;
     private String stationIdentifier;

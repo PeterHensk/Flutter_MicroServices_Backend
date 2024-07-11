@@ -17,6 +17,7 @@ public class SessionMapper {
 
     public SessionDto toSessionDto(Session session) {
         SessionDto dto = new SessionDto();
+        dto.setId(session.getId());
         dto.setCar(toCarDto(session.getCar()));
         dto.setUserId(session.getUser().getId());
         dto.setKwh(session.getKwh());

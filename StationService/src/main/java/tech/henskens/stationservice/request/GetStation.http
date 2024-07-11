@@ -7,7 +7,7 @@ GET http://localhost:8082/station/station-1
 Content-Type: application/json
 
 ### get station with a port
-GET http://localhost:8082/station/station-123/port/port-1
+GET http://localhost:8082/station/station-1/port/1
 
 ### update a port status
 PUT http://localhost:8082/station/station-123/port/port-1

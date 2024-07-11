@@ -1,0 +1,685 @@
+﻿### Create session 1
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{
+  "carId": 1,
+  "userId": 2,
+  "stationIdentifier": "station-1",
+  "portIdentifier": "1",
+  "kwh": 12,
+  "started": "2024-01-01T10:30:00",
+  "ended": "2024-01-01T12:35:00"
+}
+
+### Create session 2
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{
+  "carId": 2,
+  "userId": 2,
+  "stationIdentifier": "station-1",
+  "portIdentifier": "4",
+  "kwh": 12,
+  "started": "2024-01-02T10:30:00",
+  "ended": "2024-01-02T12:35:00"
+}
+
+### Create session 3
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{
+  "carId": 1,
+  "userId": 2,
+  "stationIdentifier": "station-1",
+  "portIdentifier": "1",
+  "kwh": 12,
+  "started": "2024-02-01T10:30:00",
+  "ended": "2024-02-01T12:35:00"
+}
+
+### Create session 4
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{
+  "carId": 2,
+  "userId": 2,
+  "stationIdentifier": "station-1",
+  "portIdentifier": "4",
+  "kwh": 12,
+  "started": "2024-02-02T10:30:00",
+  "ended": "2024-02-02T12:35:00"
+}
+
+### Create session 5
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{
+  "carId": 1,
+  "userId": 2,
+  "stationIdentifier": "station-1",
+  "portIdentifier": "1",
+  "kwh": 12,
+  "started": "2024-02-10T10:30:00",
+  "ended": "2024-02-10T12:35:00"
+}
+
+### Create session 6
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{
+  "carId": 2,
+  "userId": 2,
+  "stationIdentifier": "station-1",
+  "portIdentifier": "4",
+  "kwh": 12,
+  "started": "2024-02-15T10:30:00",
+  "ended": "2024-02-15T12:35:00"
+}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+        
+{"carId": 2,
+  "userId": 4,
+  "stationIdentifier": "station-6",
+  "portIdentifier": "2",
+  "kwh": 31.93,
+  "started": "2024-06-04T16:11:20",
+  "ended": "2024-06-04T18:47:20"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{
+  "carId": 4,
+  "userId": 2,
+  "stationIdentifier": "station-5",
+  "portIdentifier": "3",
+  "kwh": 14.41,
+  "started": "2024-01-05T17:15:39",
+  "ended": "2024-01-05T19:09:39"
+}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 2,
+"userId": 3,
+"stationIdentifier": "station-4",
+"portIdentifier": "4",
+"kwh": 15.37,
+"started": "2024-01-16T20:15:25",
+"ended": "2024-01-16T21:25:25"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 4,
+"userId": 3,
+"stationIdentifier": "station-6",
+"portIdentifier": "4",
+"kwh": 23.73,
+"started": "2024-02-21T19:28:28",
+"ended": "2024-02-21T20:05:28"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 5,
+"userId": 4,
+"stationIdentifier": "station-5",
+"portIdentifier": "3",
+"kwh": 48.07,
+"started": "2024-04-21T06:28:16",
+"ended": "2024-04-21T09:22:16"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 1,
+"userId": 3,
+"stationIdentifier": "station-3",
+"portIdentifier": "1",
+"kwh": 22.34,
+"started": "2024-06-11T18:15:19",
+"ended": "2024-06-11T18:58:19"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 3,
+"userId": 2,
+"stationIdentifier": "station-4",
+"portIdentifier": "2",
+"kwh": 15.91,
+"started": "2024-01-27T18:34:49",
+"ended": "2024-01-27T19:09:49"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 1,
+"userId": 4,
+"stationIdentifier": "station-2",
+"portIdentifier": "4",
+"kwh": 35.23,
+"started": "2024-06-01T14:34:57",
+"ended": "2024-06-01T16:28:57"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 5,
+"userId": 3,
+"stationIdentifier": "station-6",
+"portIdentifier": "4",
+"kwh": 18.0,
+"started": "2024-02-29T17:33:58",
+"ended": "2024-02-29T19:28:58"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 2,
+"userId": 2,
+"stationIdentifier": "station-1",
+"portIdentifier": "3",
+"kwh": 39.34,
+"started": "2024-06-23T22:21:19",
+"ended": "2024-06-23T23:29:19"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 4,
+"userId": 4,
+"stationIdentifier": "station-2",
+"portIdentifier": "4",
+"kwh": 21.53,
+"started": "2024-02-28T08:49:04",
+"ended": "2024-02-28T09:37:04"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 2,
+"userId": 2,
+"stationIdentifier": "station-2",
+"portIdentifier": "4",
+"kwh": 10.68,
+"started": "2024-04-03T04:30:24",
+"ended": "2024-04-03T06:02:24"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 3,
+"userId": 2,
+"stationIdentifier": "station-4",
+"portIdentifier": "1",
+"kwh": 27.24,
+"started": "2024-06-03T11:32:57",
+"ended": "2024-06-03T13:02:57"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 1,
+"userId": 2,
+"stationIdentifier": "station-5",
+"portIdentifier": "2",
+"kwh": 5.85,
+"started": "2024-02-11T23:30:28",
+"ended": "2024-02-12T02:11:28"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 4,
+"userId": 4,
+"stationIdentifier": "station-6",
+"portIdentifier": "3",
+"kwh": 46.22,
+"started": "2024-04-25T09:25:55",
+"ended": "2024-04-25T10:57:55"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 2,
+"userId": 2,
+"stationIdentifier": "station-3",
+"portIdentifier": "2",
+"kwh": 30.55,
+"started": "2024-01-11T13:21:19",
+"ended": "2024-01-11T14:51:19"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 3,
+"userId": 3,
+"stationIdentifier": "station-6",
+"portIdentifier": "2",
+"kwh": 13.8,
+"started": "2024-04-13T15:45:31",
+"ended": "2024-04-13T16:53:31"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 5,
+"userId": 2,
+"stationIdentifier": "station-3",
+"portIdentifier": "4",
+"kwh": 12.57,
+"started": "2024-03-21T14:53:28",
+"ended": "2024-03-21T15:53:28"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 4,
+"userId": 2,
+"stationIdentifier": "station-5",
+"portIdentifier": "3",
+"kwh": 47.6,
+"started": "2024-02-02T03:37:31",
+"ended": "2024-02-02T06:34:31"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 1,
+"userId": 2,
+"stationIdentifier": "station-5",
+"portIdentifier": "2",
+"kwh": 5.49,
+"started": "2024-06-10T09:45:06",
+"ended": "2024-06-10T10:55:06"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 2,
+"userId": 3,
+"stationIdentifier": "station-6",
+"portIdentifier": "3",
+"kwh": 45.88,
+"started": "2024-03-18T21:26:20",
+"ended": "2024-03-18T22:15:20"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 5,
+"userId": 3,
+"stationIdentifier": "station-4",
+"portIdentifier": "1",
+"kwh": 29.6,
+"started": "2024-02-05T23:11:36",
+"ended": "2024-02-06T01:13:36"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 4,
+"userId": 2,
+"stationIdentifier": "station-1",
+"portIdentifier": "4",
+"kwh": 14.26,
+"started": "2024-02-16T13:00:36",
+"ended": "2024-02-16T15:23:36"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 2,
+"userId": 3,
+"stationIdentifier": "station-2",
+"portIdentifier": "4",
+"kwh": 26.23,
+"started": "2024-04-03T10:28:04",
+"ended": "2024-04-03T13:20:04"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 1,
+"userId": 3,
+"stationIdentifier": "station-5",
+"portIdentifier": "3",
+"kwh": 33.7,
+"started": "2024-03-29T22:59:33",
+"ended": "2024-03-30T01:37:33"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 5,
+"userId": 2,
+"stationIdentifier": "station-5",
+"portIdentifier": "4",
+"kwh": 48.32,
+"started": "2024-06-13T13:15:46",
+"ended": "2024-06-13T15:16:46"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 4,
+"userId": 2,
+"stationIdentifier": "station-4",
+"portIdentifier": "1",
+"kwh": 41.61,
+"started": "2024-03-23T04:21:00",
+"ended": "2024-03-23T05:22:00"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 5,
+"userId": 2,
+"stationIdentifier": "station-3",
+"portIdentifier": "3",
+"kwh": 18.48,
+"started": "2024-06-20T08:25:43",
+"ended": "2024-06-20T09:00:43"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 3,
+"userId": 2,
+"stationIdentifier": "station-4",
+"portIdentifier": "2",
+"kwh": 39.86,
+"started": "2024-05-11T21:14:32",
+"ended": "2024-05-11T22:30:32"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 3,
+"userId": 3,
+"stationIdentifier": "station-5",
+"portIdentifier": "3",
+"kwh": 49.96,
+"started": "2024-01-24T18:28:11",
+"ended": "2024-01-24T20:55:11"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 5,
+"userId": 3,
+"stationIdentifier": "station-5",
+"portIdentifier": "2",
+"kwh": 42.82,
+"started": "2024-02-18T22:33:02",
+"ended": "2024-02-19T01:19:02"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 4,
+"userId": 2,
+"stationIdentifier": "station-1",
+"portIdentifier": "2",
+"kwh": 20.89,
+"started": "2024-01-04T16:37:55",
+"ended": "2024-01-04T19:24:55"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 1,
+"userId": 2,
+"stationIdentifier": "station-5",
+"portIdentifier": "1",
+"kwh": 14.67,
+"started": "2024-03-29T05:58:55",
+"ended": "2024-03-29T07:47:55"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 4,
+"userId": 3,
+"stationIdentifier": "station-6",
+"portIdentifier": "3",
+"kwh": 43.78,
+"started": "2024-04-18T13:37:00",
+"ended": "2024-04-18T14:07:00"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 3,
+"userId": 4,
+"stationIdentifier": "station-2",
+"portIdentifier": "3",
+"kwh": 7.28,
+"started": "2024-02-01T10:53:02",
+"ended": "2024-02-01T11:29:02"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 4,
+"userId": 3,
+"stationIdentifier": "station-3",
+"portIdentifier": "2",
+"kwh": 13.76,
+"started": "2024-04-10T05:22:11",
+"ended": "2024-04-10T08:09:11"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 1,
+"userId": 4,
+"stationIdentifier": "station-3",
+"portIdentifier": "2",
+"kwh": 23.37,
+"started": "2024-06-24T14:22:39",
+"ended": "2024-06-24T17:04:39"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 1,
+"userId": 3,
+"stationIdentifier": "station-6",
+"portIdentifier": "1",
+"kwh": 23.38,
+"started": "2024-01-25T09:05:25",
+"ended": "2024-01-25T10:40:25"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 2,
+"userId": 4,
+"stationIdentifier": "station-5",
+"portIdentifier": "4",
+"kwh": 10.27,
+"started": "2024-01-19T18:51:58",
+"ended": "2024-01-19T19:38:58"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 4,
+"userId": 2,
+"stationIdentifier": "station-1",
+"portIdentifier": "2",
+"kwh": 38.3,
+"started": "2024-02-22T22:43:21",
+"ended": "2024-02-22T23:53:21"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 3,
+"userId": 2,
+"stationIdentifier": "station-4",
+"portIdentifier": "3",
+"kwh": 34.62,
+"started": "2024-05-26T02:39:56",
+"ended": "2024-05-26T04:39:56"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 1,
+"userId": 4,
+"stationIdentifier": "station-6",
+"portIdentifier": "1",
+"kwh": 28.63,
+"started": "2024-03-04T13:10:56",
+"ended": "2024-03-04T15:55:56"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 4,
+"userId": 3,
+"stationIdentifier": "station-5",
+"portIdentifier": "1",
+"kwh": 49.12,
+"started": "2024-02-21T14:21:22",
+"ended": "2024-02-21T15:43:22"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 5,
+"userId": 2,
+"stationIdentifier": "station-1",
+"portIdentifier": "3",
+"kwh": 11.9,
+"started": "2024-03-04T20:04:34",
+"ended": "2024-03-04T22:35:34"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 2,
+"userId": 3,
+"stationIdentifier": "station-1",
+"portIdentifier": "4",
+"kwh": 13.95,
+"started": "2024-02-13T03:35:23",
+"ended": "2024-02-13T06:16:23"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 3,
+"userId": 4,
+"stationIdentifier": "station-3",
+"portIdentifier": "4",
+"kwh": 31.69,
+"started": "2024-01-15T04:13:40",
+"ended": "2024-01-15T07:12:40"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 2,
+"userId": 2,
+"stationIdentifier": "station-1",
+"portIdentifier": "1",
+"kwh": 39.01,
+"started": "2024-02-11T05:12:17",
+"ended": "2024-02-11T07:57:17"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 3,
+"userId": 4,
+"stationIdentifier": "station-4",
+"portIdentifier": "1",
+"kwh": 12.33,
+"started": "2024-01-30T19:03:53",
+"ended": "2024-01-30T21:18:53"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 1,
+"userId": 2,
+"stationIdentifier": "station-1",
+"portIdentifier": "3",
+"kwh": 44.73,
+"started": "2024-01-24T23:31:22",
+"ended": "2024-01-25T00:06:22"}
+
+### Create session
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{"carId": 1,
+"userId": 4,
+"stationIdentifier": "station-5",
+"portIdentifier": "2",
+"kwh": 14.97,
+"started": "2024-06-03T14:49:22",
+"ended": "2024-06-03T17:12:22"}

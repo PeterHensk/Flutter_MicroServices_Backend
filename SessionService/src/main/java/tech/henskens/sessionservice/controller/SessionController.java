@@ -1,16 +1,12 @@
 package tech.henskens.sessionservice.controller;
 
 import java.time.LocalDateTime;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import tech.henskens.sessionservice.dto.session.DateRangeDto;
 import tech.henskens.sessionservice.dto.session.SessionDto;
 import tech.henskens.sessionservice.manager.session.ISessionManager;
@@ -43,6 +39,17 @@ public class SessionController {
         DateRangeDto dateRangeDto = new DateRangeDto(startDate, endDate, stationIdentifier);
         int count = this.sessionManager.countSessionsBetweenDates(dateRangeDto);
         return new ResponseEntity<>(count, HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<SessionDto>> getAllSessions(Pageable pageable) {
+        return ResponseEntity.ok(sessionManager.getAllSessions(pageable));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteSession(@PathVariable Long id) {
+        sessionManager.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }
 

@@ -1,0 +1,5 @@
+﻿### GET sessions
+GET http://localhost:8081/session?page=0&size=10
+
+### DELETE session
+DELETE http://localhost:8081/session/42

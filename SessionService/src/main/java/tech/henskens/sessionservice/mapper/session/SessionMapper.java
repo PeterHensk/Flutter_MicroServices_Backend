@@ -4,8 +4,10 @@ import java.time.LocalDateTime;
 
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
+import tech.henskens.sessionservice.dto.car.CarDto;
 import tech.henskens.sessionservice.dto.session.DateRangeDto;
 import tech.henskens.sessionservice.dto.session.SessionDto;
+import tech.henskens.sessionservice.model.Car;
 import tech.henskens.sessionservice.model.Session;
 
 @Component
@@ -15,7 +17,7 @@ public class SessionMapper {
 
     public SessionDto toSessionDto(Session session) {
         SessionDto dto = new SessionDto();
-        dto.setCarId(session.getCar().getId());
+        dto.setCar(toCarDto(session.getCar()));
         dto.setUserId(session.getUser().getId());
         dto.setKwh(session.getKwh());
         dto.setStationIdentifier(session.getStationIdentifier());
@@ -23,6 +25,15 @@ public class SessionMapper {
         dto.setStarted(session.getStarted());
         dto.setEnded(session.getEnded());
         return dto;
+    }
+
+    private CarDto toCarDto(Car car) {
+        CarDto carDto = new CarDto();
+        carDto.setId(car.getId());
+        carDto.setBrand(car.getBrand());
+        carDto.setModel(car.getModel());
+        carDto.setLicensePlate(car.getLicensePlate());
+        return carDto;
     }
 
     public Session toSession(SessionDto dto) {

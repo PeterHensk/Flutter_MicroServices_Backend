@@ -3,6 +3,8 @@ package tech.henskens.sessionservice.manager.session;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import tech.henskens.sessionservice.dto.session.DateRangeDto;
 import tech.henskens.sessionservice.dto.session.SessionDto;
@@ -34,10 +36,16 @@ public class SessionManager implements ISessionManager {
 
     public SessionDto createSession(SessionDto sessionDto) {
         String portStatus = this.checkPortAvailability(sessionDto);
+        if (!userRepository.existsById(sessionDto.getUserId())) {
+            throw new NoSuchElementException("User with id " + sessionDto.getUserId() + " does not exist");
+        }
+        if (!carRepository.existsById(sessionDto.getCar().getId())) {
+            throw new NoSuchElementException("Car with id " + sessionDto.getUserId() + " does not exist");
+        }
         if (!"AVAILABLE".equals(portStatus)) {
             throw new IllegalArgumentException("Port is not available for charging.");
         } else {
-            Car car = this.carRepository.findById(sessionDto.getCarId()).orElseThrow(() -> new IllegalArgumentException("Car not found"));
+            Car car = this.carRepository.findById(sessionDto.getCar().getId()).orElseThrow(() -> new IllegalArgumentException("Car not found"));
             User user = this.userRepository.findById(sessionDto.getUserId()).orElseThrow(() -> new IllegalArgumentException("User not found"));
             Session session = this.sessionMapper.toSession(sessionDto);
             session.setCar(car);
@@ -49,8 +57,8 @@ public class SessionManager implements ISessionManager {
 
     public SessionDto updateSession(Long id, SessionDto sessionDto) {
         Session session = this.sessionRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Session not found."));
-        if (sessionDto.getCarId() != null) {
-            Car car = this.carRepository.findById(sessionDto.getCarId()).orElseThrow(() -> new IllegalArgumentException("Car not found"));
+        if (sessionDto.getCar().getId() != null) {
+            Car car = this.carRepository.findById(sessionDto.getCar().getId()).orElseThrow(() -> new IllegalArgumentException("Car not found"));
             session.setCar(car);
         }
 
@@ -66,6 +74,19 @@ public class SessionManager implements ISessionManager {
 
     public int countSessionsBetweenDates(DateRangeDto dateRangeDto) {
         return this.sessionRepository.countByStartedBetweenAndStationIdentifier(dateRangeDto.getStartDate(), dateRangeDto.getEndDate(), dateRangeDto.getStationIdentifier());
+    }
+
+    @Override
+    public Page<SessionDto> getAllSessions(Pageable pageable) {
+        return sessionRepository.findAll(pageable).map(sessionMapper::toSessionDto);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        if (!sessionRepository.existsById(id)) {
+            throw new NoSuchElementException("Session with id " + id + " does not exist");
+        }
+        sessionRepository.deleteById(id);
     }
 
     private String checkPortAvailability(SessionDto sessionDto) {

@@ -4,6 +4,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,10 +28,12 @@ public class UserController {
     }
 
     @PostMapping({"/whoami"})
-    public CreateUserDto whoAmI(@RequestHeader("Authorization") String authorizationHeader) throws Exception {
-        String idTokenString = authorizationHeader.substring(7);
-        FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idTokenString);
-        return this.userManager.handleUser(decodedToken);
+    public ResponseEntity<CreateUserDto> whoAmI(@RequestHeader("Authorization") String bearerToken) throws Exception {
+        this.userManager.authenticatedUser(bearerToken);
+        String idToken = bearerToken.substring(7);
+        FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+        CreateUserDto createdUser = this.userManager.handleUser(decodedToken);
+        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
     @GetMapping

@@ -40,7 +40,7 @@ public class SessionController {
     }
 
     @PutMapping("/stop/{id}")
-    public ResponseEntity<SessionDto> stopSession(@PathVariable Long id) {
+    public ResponseEntity<SessionDto> stopSession(@RequestHeader("Authorization") String bearerToken, @PathVariable Long id) {
         SessionDto stoppedSession = this.sessionManager.stopSession(id);
         return new ResponseEntity<>(stoppedSession, HttpStatus.OK);
     }

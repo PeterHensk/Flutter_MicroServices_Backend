@@ -15,4 +15,5 @@ public interface IUserManager {
     GetUserDto updateUser(Long id, GetUserDto userDto);
 
     User authenticatedUser(String bearerToken);
+    
 }

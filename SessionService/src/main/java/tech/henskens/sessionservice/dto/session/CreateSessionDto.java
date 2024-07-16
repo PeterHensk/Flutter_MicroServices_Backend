@@ -2,15 +2,14 @@ package tech.henskens.sessionservice.dto.session;
 
 import lombok.Getter;
 import lombok.Setter;
-import tech.henskens.sessionservice.dto.car.CarDto;
 
 import java.time.LocalDateTime;
 
 @Setter
 @Getter
-public class SessionDto {
+public class CreateSessionDto {
     private Long id;
-    private CarDto car;
+    private Long carId;
     private Long userId;
     private String stationIdentifier;
     private String portIdentifier;
@@ -18,4 +17,3 @@ public class SessionDto {
     private LocalDateTime started;
     private LocalDateTime ended;
 }
-

@@ -7,9 +7,7 @@ Content-Type: application/json
   "userId": 2,
   "stationIdentifier": "station-1",
   "portIdentifier": "1",
-  "kwh": 12,
-  "started": "2024-01-01T10:30:00",
-  "ended": "2024-01-01T12:35:00"
+  "started": "2024-07-15T10:30:00"
 }
 
 ### Create session 2
@@ -22,8 +20,8 @@ Content-Type: application/json
   "stationIdentifier": "station-1",
   "portIdentifier": "4",
   "kwh": 12,
-  "started": "2024-01-02T10:30:00",
-  "ended": "2024-01-02T12:35:00"
+  "started": "2024-07-02T10:30:00",
+  "ended": "2024-07-02T12:35:00"
 }
 
 ### Create session 3

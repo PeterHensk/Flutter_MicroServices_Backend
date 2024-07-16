@@ -1,13 +1,16 @@
 package tech.henskens.sessionservice.manager.session;
 
+import java.time.Duration;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import tech.henskens.sessionservice.dto.session.CreateSessionDto;
 import tech.henskens.sessionservice.dto.session.DateRangeDto;
 import tech.henskens.sessionservice.dto.session.SessionDto;
+import tech.henskens.sessionservice.dto.session.StartSessionDto;
 import tech.henskens.sessionservice.dto.station.ChargingPortDto;
 import tech.henskens.sessionservice.manager.station.IStationManager;
 import tech.henskens.sessionservice.mapper.session.SessionMapper;
@@ -17,6 +20,8 @@ import tech.henskens.sessionservice.model.User;
 import tech.henskens.sessionservice.repository.ICarRepository;
 import tech.henskens.sessionservice.repository.ISessionRepository;
 import tech.henskens.sessionservice.repository.IUserRepository;
+
+import java.time.LocalDateTime;
 
 @Service
 public class SessionManager implements ISessionManager {
@@ -34,20 +39,20 @@ public class SessionManager implements ISessionManager {
         this.userRepository = userRepository;
     }
 
-    public SessionDto createSession(SessionDto sessionDto) {
-        String portStatus = this.checkPortAvailability(sessionDto);
-        if (!userRepository.existsById(sessionDto.getUserId())) {
-            throw new NoSuchElementException("User with id " + sessionDto.getUserId() + " does not exist");
+    public SessionDto createSession(CreateSessionDto createSessionDto) {
+        String portStatus = this.checkPortAvailability(createSessionDto.getStationIdentifier(), createSessionDto.getPortIdentifier());
+        if (!userRepository.existsById(createSessionDto.getUserId())) {
+            throw new NoSuchElementException("User with id " + createSessionDto.getUserId() + " does not exist");
         }
-        if (!carRepository.existsById(sessionDto.getCar().getId())) {
-            throw new NoSuchElementException("Car with id " + sessionDto.getUserId() + " does not exist");
+        if (!carRepository.existsById(createSessionDto.getCarId())) {
+            throw new NoSuchElementException("Car with id " + createSessionDto.getUserId() + " does not exist");
         }
         if (!"AVAILABLE".equals(portStatus)) {
             throw new IllegalArgumentException("Port is not available for charging.");
         } else {
-            Car car = this.carRepository.findById(sessionDto.getCar().getId()).orElseThrow(() -> new IllegalArgumentException("Car not found"));
-            User user = this.userRepository.findById(sessionDto.getUserId()).orElseThrow(() -> new IllegalArgumentException("User not found"));
-            Session session = this.sessionMapper.toSession(sessionDto);
+            Car car = this.carRepository.findById(createSessionDto.getCarId()).orElseThrow(() -> new IllegalArgumentException("Car not found"));
+            User user = this.userRepository.findById(createSessionDto.getUserId()).orElseThrow(() -> new IllegalArgumentException("User not found"));
+            Session session = this.sessionMapper.toSession(createSessionDto);
             session.setCar(car);
             session.setUser(user);
             session = this.sessionRepository.save(session);
@@ -89,9 +94,48 @@ public class SessionManager implements ISessionManager {
         sessionRepository.deleteById(id);
     }
 
-    private String checkPortAvailability(SessionDto sessionDto) {
-        Optional<ChargingPortDto> chargingPortOptional = this.stationManager.getChargingPort(sessionDto.getStationIdentifier(), sessionDto.getPortIdentifier());
-        ChargingPortDto chargingPort = chargingPortOptional.orElseThrow(() -> new NoSuchElementException("Charging port not found with id: " + sessionDto.getPortIdentifier()));
+    @Override
+    public SessionDto startSession(User user, StartSessionDto startSessionDto) {
+        User existingUser = this.userRepository.findById(user.getId())
+                .orElseThrow(() -> new NoSuchElementException("User with id " + user.getId() + " does not exist"));
+        Car existingCar = this.carRepository.findByLicensePlate(startSessionDto.getLicensePlate())
+                .orElseThrow(() -> new NoSuchElementException("Car with license plate " + startSessionDto.getLicensePlate() + " does not exist"));
+
+        String portStatus = this.checkPortAvailability(startSessionDto.getStationIdentifier(), startSessionDto.getPortIdentifier());
+        if (!"AVAILABLE".equals(portStatus)) {
+            throw new IllegalArgumentException("Port is not available for charging.");
+        }
+        this.stationManager.updateChargingPortStatus(startSessionDto.getStationIdentifier(), startSessionDto.getPortIdentifier(), "IN_USE");
+        
+        Session session = new Session();
+        session.setCar(existingCar);
+        session.setUser(existingUser);
+        session.setStationIdentifier(startSessionDto.getStationIdentifier());
+        session.setPortIdentifier(startSessionDto.getPortIdentifier());
+        session.setStarted(LocalDateTime.now());
+        session = this.sessionRepository.save(session);
+        return this.sessionMapper.toSessionDto(session);
+    }
+
+    @Override
+    public SessionDto stopSession(Long id) {
+        Session session = this.sessionRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Session with id " + id + " does not exist"));
+
+        LocalDateTime now = LocalDateTime.now();
+        session.setEnded(now);
+        long seconds = Duration.between(session.getStarted(), now).getSeconds();
+        session.setKwh(seconds * 0.002);
+
+        this.stationManager.updateChargingPortStatus(session.getStationIdentifier(), session.getPortIdentifier(), "AVAILABLE");
+
+        session = this.sessionRepository.save(session);
+        return this.sessionMapper.toSessionDto(session);
+    }
+
+    private String checkPortAvailability(String stationIdentifier, String portIdentifier) {
+        Optional<ChargingPortDto> chargingPortOptional = this.stationManager.getChargingPort(stationIdentifier, portIdentifier);
+        ChargingPortDto chargingPort = chargingPortOptional.orElseThrow(() -> new NoSuchElementException("Charging port not found with id: " + portIdentifier));
         return chargingPort.getStatus();
     }
 }

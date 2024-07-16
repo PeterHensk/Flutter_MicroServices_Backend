@@ -1,5 +1,6 @@
 package tech.henskens.sessionservice.manager.user;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
 
 import java.sql.Timestamp;
@@ -68,5 +69,23 @@ public class UserManager implements IUserManager {
         user.setUpdated(userDto.getUpdated());
         User updatedUser = this.userRepository.save(user);
         return this.userToGetUserDtoMapper.userToGetUserDto(updatedUser);
+    }
+
+    @Override
+    public User authenticatedUser(String bearerToken) {
+        try {
+            String idToken = bearerToken.substring(7);
+            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+            String email = decodedToken.getEmail();
+            User user = userRepository.findByEmailAddress(email);
+            if (user == null) {
+                throw new NoSuchElementException("User with email " + email + " does not exist");
+            }
+            return user;
+        } catch (NoSuchElementException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException("Authentication failed", e);
+        }
     }
 }

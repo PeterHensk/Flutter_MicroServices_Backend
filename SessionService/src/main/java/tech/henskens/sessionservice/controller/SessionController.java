@@ -7,23 +7,42 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tech.henskens.sessionservice.dto.session.CreateSessionDto;
 import tech.henskens.sessionservice.dto.session.DateRangeDto;
 import tech.henskens.sessionservice.dto.session.SessionDto;
+import tech.henskens.sessionservice.dto.session.StartSessionDto;
 import tech.henskens.sessionservice.manager.session.ISessionManager;
+import tech.henskens.sessionservice.manager.user.IUserManager;
+import tech.henskens.sessionservice.model.User;
 
 @RestController
 @RequestMapping({"/session"})
 public class SessionController {
     private final ISessionManager sessionManager;
+    private final IUserManager userManager;
 
-    public SessionController(ISessionManager sessionManager) {
+    public SessionController(ISessionManager sessionManager, IUserManager userManager) {
         this.sessionManager = sessionManager;
+        this.userManager = userManager;
     }
 
     @PostMapping
-    public ResponseEntity<SessionDto> createSession(@RequestBody SessionDto sessionDto) {
-        SessionDto createdSession = this.sessionManager.createSession(sessionDto);
+    public ResponseEntity<SessionDto> createSession(@RequestBody CreateSessionDto createSessionDto) {
+        SessionDto createdSession = this.sessionManager.createSession(createSessionDto);
         return new ResponseEntity<>(createdSession, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/start")
+    public ResponseEntity<SessionDto> startSession(@RequestHeader("Authorization") String bearerToken, @RequestBody StartSessionDto startSessionDto) {
+        User authenticatedUser = this.userManager.authenticatedUser(bearerToken);
+        SessionDto createdSession = this.sessionManager.startSession(authenticatedUser, startSessionDto);
+        return new ResponseEntity<>(createdSession, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/stop/{id}")
+    public ResponseEntity<SessionDto> stopSession(@PathVariable Long id) {
+        SessionDto stoppedSession = this.sessionManager.stopSession(id);
+        return new ResponseEntity<>(stoppedSession, HttpStatus.OK);
     }
 
     @PutMapping({"/{id}"})

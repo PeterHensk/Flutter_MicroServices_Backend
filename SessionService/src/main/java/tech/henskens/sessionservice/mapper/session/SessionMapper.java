@@ -8,8 +8,10 @@ import tech.henskens.sessionservice.dto.car.CarDto;
 import tech.henskens.sessionservice.dto.session.CreateSessionDto;
 import tech.henskens.sessionservice.dto.session.DateRangeDto;
 import tech.henskens.sessionservice.dto.session.SessionDto;
+import tech.henskens.sessionservice.dto.session.StartSessionDto;
 import tech.henskens.sessionservice.model.Car;
 import tech.henskens.sessionservice.model.Session;
+import tech.henskens.sessionservice.model.User;
 
 @Component
 public class SessionMapper {
@@ -64,6 +66,16 @@ public class SessionMapper {
         if (dto.getEnded() != null) {
             session.setEnded(dto.getEnded());
         }
+    }
+
+    public Session toSessionFromStartSessionDto(StartSessionDto startSessionDto, User user, Car car) {
+        Session session = new Session();
+        session.setCar(car);
+        session.setUser(user);
+        session.setStationIdentifier(startSessionDto.getStationIdentifier());
+        session.setPortIdentifier(startSessionDto.getPortIdentifier());
+        session.setStarted(LocalDateTime.now());
+        return session;
     }
 }
 

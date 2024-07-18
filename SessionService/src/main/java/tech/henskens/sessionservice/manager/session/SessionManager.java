@@ -6,6 +6,8 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import tech.henskens.sessionservice.dto.session.CreateSessionDto;
 import tech.henskens.sessionservice.dto.session.DateRangeDto;
@@ -95,9 +97,9 @@ public class SessionManager implements ISessionManager {
     }
 
     @Override
-    public SessionDto startSession(User user, StartSessionDto startSessionDto) {
-        User existingUser = this.userRepository.findById(user.getId())
-                .orElseThrow(() -> new NoSuchElementException("User with id " + user.getId() + " does not exist"));
+    public ResponseEntity<SessionDto> startSession(User authenticatedUser, StartSessionDto startSessionDto) {
+        User existingUser = this.userRepository.findById(authenticatedUser.getId())
+                .orElseThrow(() -> new NoSuchElementException("User with id " + authenticatedUser.getId() + " does not exist"));
         Car existingCar = this.carRepository.findByLicensePlate(startSessionDto.getLicensePlate())
                 .orElseThrow(() -> new NoSuchElementException("Car with license plate " + startSessionDto.getLicensePlate() + " does not exist"));
 
@@ -106,19 +108,19 @@ public class SessionManager implements ISessionManager {
             throw new IllegalArgumentException("Port is not available for charging.");
         }
         this.stationManager.updateChargingPortStatus(startSessionDto.getStationIdentifier(), startSessionDto.getPortIdentifier(), "IN_USE");
-        
-        Session session = new Session();
-        session.setCar(existingCar);
-        session.setUser(existingUser);
-        session.setStationIdentifier(startSessionDto.getStationIdentifier());
-        session.setPortIdentifier(startSessionDto.getPortIdentifier());
-        session.setStarted(LocalDateTime.now());
+
+        Session session = sessionMapper.toSessionFromStartSessionDto(startSessionDto, existingUser, existingCar);
         session = this.sessionRepository.save(session);
-        return this.sessionMapper.toSessionDto(session);
+        SessionDto sessionDto = this.sessionMapper.toSessionDto(session);
+        if (sessionDto == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(sessionDto, HttpStatus.CREATED);
+        }
     }
 
     @Override
-    public SessionDto stopSession(Long id) {
+    public ResponseEntity<SessionDto> stopSession(Long id) {
         Session session = this.sessionRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Session with id " + id + " does not exist"));
 
@@ -130,13 +132,29 @@ public class SessionManager implements ISessionManager {
         this.stationManager.updateChargingPortStatus(session.getStationIdentifier(), session.getPortIdentifier(), "AVAILABLE");
 
         session = this.sessionRepository.save(session);
-        return this.sessionMapper.toSessionDto(session);
+        SessionDto sessionDto = this.sessionMapper.toSessionDto(session);
+        if (sessionDto == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(sessionDto, HttpStatus.OK);
+        }
     }
 
     private String checkPortAvailability(String stationIdentifier, String portIdentifier) {
         Optional<ChargingPortDto> chargingPortOptional = this.stationManager.getChargingPort(stationIdentifier, portIdentifier);
         ChargingPortDto chargingPort = chargingPortOptional.orElseThrow(() -> new NoSuchElementException("Charging port not found with id: " + portIdentifier));
         return chargingPort.getStatus();
+    }
+
+    @Override
+    public ResponseEntity<SessionDto> getSessionForAuthenticatedUser(User user) {
+        Session session = sessionRepository.findByUserAndEndedIsNull(user);
+        if (session == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            SessionDto sessionDto = sessionMapper.toSessionDto(session);
+            return new ResponseEntity<>(sessionDto, HttpStatus.OK);
+        }
     }
 }
 

@@ -2,10 +2,12 @@ package tech.henskens.sessionservice.manager.session;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import tech.henskens.sessionservice.dto.session.CreateSessionDto;
 import tech.henskens.sessionservice.dto.session.DateRangeDto;
 import tech.henskens.sessionservice.dto.session.SessionDto;
 import tech.henskens.sessionservice.dto.session.StartSessionDto;
+import tech.henskens.sessionservice.model.Session;
 import tech.henskens.sessionservice.model.User;
 
 public interface ISessionManager {
@@ -19,7 +21,9 @@ public interface ISessionManager {
 
     void deleteById(Long id);
 
-    SessionDto startSession(User user, StartSessionDto startSessionDto);
+    ResponseEntity<SessionDto> startSession(User authenticatedUser, StartSessionDto startSessionDto);
 
-    SessionDto stopSession(Long id);
+    ResponseEntity<SessionDto> stopSession(Long id);
+
+    ResponseEntity<SessionDto> getSessionForAuthenticatedUser(User user);
 }

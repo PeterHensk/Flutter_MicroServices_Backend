@@ -32,8 +32,7 @@ public class UserController {
         this.userManager.authenticatedUser(bearerToken);
         String idToken = bearerToken.substring(7);
         FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
-        CreateUserDto createdUser = this.userManager.handleUser(decodedToken);
-        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+        return this.userManager.handleUser(decodedToken);
     }
 
     @GetMapping

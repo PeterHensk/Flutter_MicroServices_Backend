@@ -13,7 +13,10 @@ import tech.henskens.sessionservice.dto.session.SessionDto;
 import tech.henskens.sessionservice.dto.session.StartSessionDto;
 import tech.henskens.sessionservice.manager.session.ISessionManager;
 import tech.henskens.sessionservice.manager.user.IUserManager;
+import tech.henskens.sessionservice.model.Session;
 import tech.henskens.sessionservice.model.User;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping({"/session"})
@@ -35,14 +38,12 @@ public class SessionController {
     @PostMapping("/start")
     public ResponseEntity<SessionDto> startSession(@RequestHeader("Authorization") String bearerToken, @RequestBody StartSessionDto startSessionDto) {
         User authenticatedUser = this.userManager.authenticatedUser(bearerToken);
-        SessionDto createdSession = this.sessionManager.startSession(authenticatedUser, startSessionDto);
-        return new ResponseEntity<>(createdSession, HttpStatus.CREATED);
+        return this.sessionManager.startSession(authenticatedUser, startSessionDto);
     }
 
     @PutMapping("/stop/{id}")
     public ResponseEntity<SessionDto> stopSession(@RequestHeader("Authorization") String bearerToken, @PathVariable Long id) {
-        SessionDto stoppedSession = this.sessionManager.stopSession(id);
-        return new ResponseEntity<>(stoppedSession, HttpStatus.OK);
+        return this.sessionManager.stopSession(id);
     }
 
     @PutMapping({"/{id}"})
@@ -69,6 +70,12 @@ public class SessionController {
     public ResponseEntity<Void> deleteSession(@PathVariable Long id) {
         sessionManager.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/running")
+    public ResponseEntity<SessionDto> getSession(@RequestHeader("Authorization") String bearerToken) {
+        User user = userManager.authenticatedUser(bearerToken);
+        return sessionManager.getSessionForAuthenticatedUser(user);
     }
 }
 

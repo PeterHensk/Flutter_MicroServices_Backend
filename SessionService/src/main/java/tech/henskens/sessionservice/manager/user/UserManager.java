@@ -10,6 +10,8 @@ import java.util.Objects;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import tech.henskens.sessionservice.dto.user.CreateUserDto;
 import tech.henskens.sessionservice.dto.user.GetUserDto;
@@ -30,18 +32,10 @@ public class UserManager implements IUserManager {
         this.userToGetUserDtoMapper = userToGetUserDtoMapper;
     }
 
-    public CreateUserDto handleUser(FirebaseToken decodedToken) {
-        String email = decodedToken.getEmail();
-        String fullName = (String) decodedToken.getClaims().get("name");
-        String[] nameParts = fullName.split(" ");
-        String firstName = nameParts[0];
-        String lastName = nameParts.length > 1 ? String.join(" ", Arrays.copyOfRange(nameParts, 1, nameParts.length)) : "";
-        CreateUserDto createUserDto = new CreateUserDto();
-        createUserDto.setEmailAddress(email);
-        createUserDto.setFirstName(firstName);
-        createUserDto.setLastName(lastName);
-        createUserDto.setRole("VIEWER");
-        User user = this.userRepository.findByEmailAddress(email);
+    @Override
+    public ResponseEntity<CreateUserDto> handleUser(FirebaseToken decodedToken) {
+        CreateUserDto createUserDto = userMapper.firebaseTokenToCreateUserDto(decodedToken);
+        User user = this.userRepository.findByEmailAddress(createUserDto.getEmailAddress());
         Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
         if (user == null) {
             user = this.userMapper.createUserDtoToUser(createUserDto);
@@ -50,7 +44,12 @@ public class UserManager implements IUserManager {
 
         user.setUpdated(currentTimestamp.toLocalDateTime());
         this.userRepository.save(user);
-        return this.userMapper.userToCreateUserDto(user);
+        CreateUserDto createdUserDto = this.userMapper.userToCreateUserDto(user);
+        if (createdUserDto == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(createdUserDto, HttpStatus.CREATED);
+        }
     }
 
     public Page<GetUserDto> getAllUsers(Pageable pageable) {

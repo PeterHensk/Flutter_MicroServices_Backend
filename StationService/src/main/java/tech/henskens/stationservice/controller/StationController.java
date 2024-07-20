@@ -11,6 +11,7 @@ import tech.henskens.stationservice.dto.ImageUploadDto;
 import tech.henskens.stationservice.dto.StationDto;
 import tech.henskens.stationservice.manager.IS3Manager;
 import tech.henskens.stationservice.manager.IStationManager;
+import tech.henskens.stationservice.manager.Session.IUserManager;
 import tech.henskens.stationservice.model.ChargingPortStatus;
 
 import java.util.Arrays;
@@ -23,10 +24,12 @@ import java.util.stream.Collectors;
 public class StationController {
     private final IStationManager stationManager;
     private final IS3Manager s3Manager;
+    private final IUserManager userManager;
 
-    public StationController(IStationManager stationManager, IS3Manager s3Manager) {
+    public StationController(IStationManager stationManager, IS3Manager s3Manager, IUserManager userManager) {
         this.stationManager = stationManager;
         this.s3Manager = s3Manager;
+        this.userManager = userManager;
     }
 
     @PostMapping
@@ -36,27 +39,31 @@ public class StationController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<StationDto>> getAllStations(Pageable pageable) {
+    public ResponseEntity<Page<StationDto>> getAllStations(@RequestHeader("Authorization") String bearerToken, Pageable pageable) {
+        this.userManager.authenticatedUser(bearerToken);
         Page<StationDto> stations = stationManager.getAllStations(pageable);
         return new ResponseEntity<>(stations, HttpStatus.OK);
     }
 
     @GetMapping("/{stationIdentifier}")
-    public ResponseEntity<StationDto> getStation(@PathVariable String stationIdentifier) {
+    public ResponseEntity<StationDto> getStation(@RequestHeader("Authorization") String bearerToken, @PathVariable String stationIdentifier) {
+        this.userManager.authenticatedUser(bearerToken);
         Optional<StationDto> station = stationManager.getStation(stationIdentifier);
         return station.map(s -> new ResponseEntity<>(s, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping("/{stationIdentifier}/port/{portIdentifier}")
-    public ResponseEntity<ChargingPortDto> getChargingPort(@PathVariable String stationIdentifier, @PathVariable String portIdentifier) {
+    public ResponseEntity<ChargingPortDto> getChargingPort(@RequestHeader("Authorization") String bearerToken, @PathVariable String stationIdentifier, @PathVariable String portIdentifier) {
+        this.userManager.authenticatedUser(bearerToken);
         Optional<ChargingPortDto> chargingPort = stationManager.getChargingPort(stationIdentifier, portIdentifier);
         return chargingPort.map(port -> new ResponseEntity<>(port, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PutMapping("/{stationIdentifier}/port/{portIdentifier}")
-    public ResponseEntity<Void> updateChargingPortStatus(@PathVariable String stationIdentifier, @PathVariable String portIdentifier, @RequestBody ChargingPortStatusDto statusDto) {
+    public ResponseEntity<Void> updateChargingPortStatus(@RequestHeader("Authorization") String bearerToken,@PathVariable String stationIdentifier, @PathVariable String portIdentifier, @RequestBody ChargingPortStatusDto statusDto) {
+        this.userManager.authenticatedUser(bearerToken);
         stationManager.updateChargingPortStatus(stationIdentifier, portIdentifier, statusDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }

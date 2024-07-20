@@ -1,11 +1,12 @@
 ﻿### create car 1
 POST http://localhost:8081/car
+Authorization: Bearer eyJhbGciOiJSUzI.
 Content-Type: application/json
 
 {
   "brand": "Hyundai",
   "model": "Tucson",
-  "licensePlate": "2-CEW-081"
+  "licensePlate": "2-CEW-082"
 }
 
 ### create car 2

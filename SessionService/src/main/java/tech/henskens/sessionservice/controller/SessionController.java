@@ -29,21 +29,16 @@ public class SessionController {
         this.userManager = userManager;
     }
 
-    @PostMapping
-    public ResponseEntity<SessionDto> createSession(@RequestBody CreateSessionDto createSessionDto) {
-        SessionDto createdSession = this.sessionManager.createSession(createSessionDto);
-        return new ResponseEntity<>(createdSession, HttpStatus.CREATED);
-    }
-
     @PostMapping("/start")
     public ResponseEntity<SessionDto> startSession(@RequestHeader("Authorization") String bearerToken, @RequestBody StartSessionDto startSessionDto) {
         User authenticatedUser = this.userManager.authenticatedUser(bearerToken);
-        return this.sessionManager.startSession(authenticatedUser, startSessionDto);
+        return this.sessionManager.startSession(bearerToken, authenticatedUser, startSessionDto);
     }
 
     @PutMapping("/stop/{id}")
     public ResponseEntity<SessionDto> stopSession(@RequestHeader("Authorization") String bearerToken, @PathVariable Long id) {
-        return this.sessionManager.stopSession(id);
+        this.userManager.authenticatedUser(bearerToken);
+        return this.sessionManager.stopSession(bearerToken, id);
     }
 
     @PutMapping({"/{id}"})

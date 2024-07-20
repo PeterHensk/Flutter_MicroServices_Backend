@@ -1,5 +1,6 @@
 package tech.henskens.sessionservice.manager.session;
 
+import org.antlr.v4.runtime.Token;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +12,6 @@ import tech.henskens.sessionservice.model.Session;
 import tech.henskens.sessionservice.model.User;
 
 public interface ISessionManager {
-    SessionDto createSession(CreateSessionDto createSessionDto);
 
     SessionDto updateSession(Long id, SessionDto sessionDto);
 
@@ -21,9 +21,9 @@ public interface ISessionManager {
 
     void deleteById(Long id);
 
-    ResponseEntity<SessionDto> startSession(User authenticatedUser, StartSessionDto startSessionDto);
+    ResponseEntity<SessionDto> startSession(String token, User authenticatedUser, StartSessionDto startSessionDto);
 
-    ResponseEntity<SessionDto> stopSession(Long id);
+    ResponseEntity<SessionDto> stopSession(String token, Long id);
 
     ResponseEntity<SessionDto> getSessionForAuthenticatedUser(User user);
 }

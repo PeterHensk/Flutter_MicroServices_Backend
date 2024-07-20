@@ -1,5 +1,7 @@
 package tech.henskens.sessionservice.manager.car;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import tech.henskens.sessionservice.dto.car.CarDto;
 import tech.henskens.sessionservice.mapper.car.CarMapper;
@@ -16,9 +18,11 @@ public class CarManager implements ICarManager {
         this.carMapper = carMapper;
     }
 
-    public CarDto createCar(CarDto carDto) {
-        Car car = this.carMapper.carDtoToCar(carDto);
-        car = (Car)this.carRepository.save(car);
-        return this.carMapper.carToCarDto(car);
+    @Override
+    public ResponseEntity<CarDto> createCar(CarDto carDto) {
+        Car car = carMapper.carDtoToCar(carDto);
+        car = carRepository.save(car);
+        CarDto createdCarDto = carMapper.carToCarDto(car);
+        return new ResponseEntity<>(createdCarDto, HttpStatus.CREATED);
     }
 }

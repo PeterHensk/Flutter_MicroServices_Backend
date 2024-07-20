@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import org.antlr.v4.runtime.Token;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -41,27 +42,6 @@ public class SessionManager implements ISessionManager {
         this.userRepository = userRepository;
     }
 
-    public SessionDto createSession(CreateSessionDto createSessionDto) {
-        String portStatus = this.checkPortAvailability(createSessionDto.getStationIdentifier(), createSessionDto.getPortIdentifier());
-        if (!userRepository.existsById(createSessionDto.getUserId())) {
-            throw new NoSuchElementException("User with id " + createSessionDto.getUserId() + " does not exist");
-        }
-        if (!carRepository.existsById(createSessionDto.getCarId())) {
-            throw new NoSuchElementException("Car with id " + createSessionDto.getUserId() + " does not exist");
-        }
-        if (!"AVAILABLE".equals(portStatus)) {
-            throw new IllegalArgumentException("Port is not available for charging.");
-        } else {
-            Car car = this.carRepository.findById(createSessionDto.getCarId()).orElseThrow(() -> new IllegalArgumentException("Car not found"));
-            User user = this.userRepository.findById(createSessionDto.getUserId()).orElseThrow(() -> new IllegalArgumentException("User not found"));
-            Session session = this.sessionMapper.toSession(createSessionDto);
-            session.setCar(car);
-            session.setUser(user);
-            session = this.sessionRepository.save(session);
-            return this.sessionMapper.toSessionDto(session);
-        }
-    }
-
     public SessionDto updateSession(Long id, SessionDto sessionDto) {
         Session session = this.sessionRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Session not found."));
         if (sessionDto.getCar().getId() != null) {
@@ -97,17 +77,17 @@ public class SessionManager implements ISessionManager {
     }
 
     @Override
-    public ResponseEntity<SessionDto> startSession(User authenticatedUser, StartSessionDto startSessionDto) {
+    public ResponseEntity<SessionDto> startSession(String token, User authenticatedUser, StartSessionDto startSessionDto) {
         User existingUser = this.userRepository.findById(authenticatedUser.getId())
                 .orElseThrow(() -> new NoSuchElementException("User with id " + authenticatedUser.getId() + " does not exist"));
         Car existingCar = this.carRepository.findByLicensePlate(startSessionDto.getLicensePlate())
                 .orElseThrow(() -> new NoSuchElementException("Car with license plate " + startSessionDto.getLicensePlate() + " does not exist"));
 
-        String portStatus = this.checkPortAvailability(startSessionDto.getStationIdentifier(), startSessionDto.getPortIdentifier());
+        String portStatus = this.checkPortAvailability(token, startSessionDto.getStationIdentifier(), startSessionDto.getPortIdentifier());
         if (!"AVAILABLE".equals(portStatus)) {
             throw new IllegalArgumentException("Port is not available for charging.");
         }
-        this.stationManager.updateChargingPortStatus(startSessionDto.getStationIdentifier(), startSessionDto.getPortIdentifier(), "IN_USE");
+        this.stationManager.updateChargingPortStatus(token, startSessionDto.getStationIdentifier(), startSessionDto.getPortIdentifier(), "IN_USE");
 
         Session session = sessionMapper.toSessionFromStartSessionDto(startSessionDto, existingUser, existingCar);
         session = this.sessionRepository.save(session);
@@ -120,7 +100,7 @@ public class SessionManager implements ISessionManager {
     }
 
     @Override
-    public ResponseEntity<SessionDto> stopSession(Long id) {
+    public ResponseEntity<SessionDto> stopSession(String token, Long id) {
         Session session = this.sessionRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Session with id " + id + " does not exist"));
 
@@ -129,7 +109,7 @@ public class SessionManager implements ISessionManager {
         long seconds = Duration.between(session.getStarted(), now).getSeconds();
         session.setKwh(seconds * 0.002);
 
-        this.stationManager.updateChargingPortStatus(session.getStationIdentifier(), session.getPortIdentifier(), "AVAILABLE");
+        this.stationManager.updateChargingPortStatus(token, session.getStationIdentifier(), session.getPortIdentifier(), "AVAILABLE");
 
         session = this.sessionRepository.save(session);
         SessionDto sessionDto = this.sessionMapper.toSessionDto(session);
@@ -140,8 +120,8 @@ public class SessionManager implements ISessionManager {
         }
     }
 
-    private String checkPortAvailability(String stationIdentifier, String portIdentifier) {
-        Optional<ChargingPortDto> chargingPortOptional = this.stationManager.getChargingPort(stationIdentifier, portIdentifier);
+    private String checkPortAvailability(String token, String stationIdentifier, String portIdentifier) {
+        Optional<ChargingPortDto> chargingPortOptional = this.stationManager.getChargingPort(token, stationIdentifier, portIdentifier);
         ChargingPortDto chargingPort = chargingPortOptional.orElseThrow(() -> new NoSuchElementException("Charging port not found with id: " + portIdentifier));
         return chargingPort.getStatus();
     }

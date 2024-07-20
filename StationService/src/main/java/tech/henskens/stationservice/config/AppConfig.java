@@ -1,4 +1,4 @@
-package tech.henskens.sessionservice.config;
+package tech.henskens.stationservice.config;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
@@ -57,7 +57,7 @@ public class AppConfig implements WebMvcConfigurer {
         http
                 .authorizeHttpRequests(authorizeRequests -> {
                     /*authorizeRequests.requestMatchers("/car/**").permitAll();*/
-                    authorizeRequests.requestMatchers("/user/**", "/session/**", "/car/**").authenticated();
+                    authorizeRequests.requestMatchers("/station/**", "/user/**").authenticated();
                     authorizeRequests.anyRequest().authenticated();
                 })
                 .csrf(AbstractHttpConfigurer::disable)

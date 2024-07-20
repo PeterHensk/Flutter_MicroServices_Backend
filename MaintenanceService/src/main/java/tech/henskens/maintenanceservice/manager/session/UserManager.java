@@ -1,4 +1,4 @@
-package tech.henskens.stationservice.manager.Session;
+package tech.henskens.maintenanceservice.manager.session;
 
 import com.google.firebase.auth.FirebaseAuth;
 import org.springframework.stereotype.Service;

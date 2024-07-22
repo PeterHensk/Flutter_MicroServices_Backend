@@ -1,14 +1,13 @@
-package tech.henskens.stationservice.dto;
+package tech.henskens.sessionservice.dto.station;
 
 import lombok.Getter;
 import lombok.Setter;
-import tech.henskens.stationservice.model.ChargingPortStatus;
 
 @Setter
 @Getter
 public class ChargingPortStatusDto {
     private String stationIdentifier;
     private String portIdentifier;
-    private ChargingPortStatus status;
+    private String status;
 }
 

@@ -4,10 +4,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import tech.henskens.maintenanceservice.dto.maintenance.MaintenanceDto;
 import tech.henskens.maintenanceservice.dto.maintenance.MaintenanceWithStationAndSessionsDto;
@@ -18,6 +21,7 @@ import tech.henskens.maintenanceservice.manager.station.IStationManager;
 import tech.henskens.maintenanceservice.mapper.MaintenanceMapper;
 import tech.henskens.maintenanceservice.model.Maintenance;
 import tech.henskens.maintenanceservice.repository.IMaintenanceRepository;
+import tech.henskens.maintenanceservice.dto.station.ChargingPortStatusDto;
 
 @Service
 public class MaintenanceManager implements IMaintenanceManager {
@@ -33,9 +37,15 @@ public class MaintenanceManager implements IMaintenanceManager {
         this.sessionManager = sessionManager;
     }
 
-    public MaintenanceDto createMaintenance(MaintenanceDto maintenanceDto) {
+    public MaintenanceDto createMaintenance(String token, MaintenanceDto maintenanceDto) {
         Maintenance maintenance = this.maintenanceMapper.toMaintenance(maintenanceDto);
         Maintenance savedMaintenance = this.maintenanceRepository.save(maintenance);
+        ChargingPortStatusDto chargingPortStatusDto = MaintenanceMapper.toChargingPortStatusDtoFromSession(maintenance, "DAMAGED");
+
+        for (int i = 1; i <= 4; i++) {
+            chargingPortStatusDto.setPortIdentifier(Integer.toString(i));
+            this.stationManager.updateChargingPortStatus(token, chargingPortStatusDto);
+        }
         return this.maintenanceMapper.toMaintenanceDto(savedMaintenance);
     }
 
@@ -57,16 +67,16 @@ public class MaintenanceManager implements IMaintenanceManager {
         this.maintenanceRepository.deleteById(id);
     }
 
-    public Page<MaintenanceWithStationAndSessionsDto> getAllMaintenancesWithStationAndSessions(Pageable pageable) {
+    public Page<MaintenanceWithStationAndSessionsDto> getAllMaintenancesWithStationAndSessions(String token, Pageable pageable) {
         Page<Maintenance> maintenances = this.maintenanceRepository.findAll(pageable);
         List<MaintenanceWithStationAndSessionsDto> dtos = maintenances.stream().map((maintenance) -> {
-            StationDto station = this.stationManager.getStation(maintenance.getStationIdentifier());
+            ResponseEntity<StationDto> station = this.stationManager.getStation(token, maintenance.getStationIdentifier());
             LocalDateTime startDate = maintenance.getCreationDate();
             Maintenance nextMaintenance = this.maintenanceRepository.findFirstByStationIdentifierAndCreationDateAfterOrderByCreationDate(maintenance.getStationIdentifier(), maintenance.getMaintenanceDate());
             LocalDateTime endDate = nextMaintenance != null ? nextMaintenance.getCreationDate() : LocalDateTime.now();
-            SessionCountDto totalCompletedSessionsDto = this.sessionManager.getSessionCount(maintenance.getStationIdentifier(), startDate, endDate);
-            Integer totalCompletedSessions = totalCompletedSessionsDto != null ? totalCompletedSessionsDto.getCount() : 0;
-            return this.maintenanceMapper.toMaintenanceWithStationAndSessionsDto(maintenance, station, totalCompletedSessions);
+            Optional<SessionCountDto> totalCompletedSessionsDto = this.sessionManager.getSessionCount(token, maintenance.getStationIdentifier(), startDate, endDate);
+            Integer totalCompletedSessions = totalCompletedSessionsDto.isPresent() ? totalCompletedSessionsDto.get().getCount() : 0;
+            return this.maintenanceMapper.toMaintenanceWithStationAndSessionsDto(maintenance, station.getBody(), totalCompletedSessions);
         }).collect(Collectors.toList());
         return new PageImpl<>(dtos, pageable, maintenances.getTotalElements());
     }

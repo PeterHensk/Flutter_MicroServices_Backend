@@ -25,7 +25,7 @@ public class MaintenanceController {
     @PostMapping
     public ResponseEntity<MaintenanceDto> createMaintenance(@RequestHeader("Authorization") String bearerToken, @RequestBody MaintenanceDto maintenanceDto) {
         this.userManager.authenticatedUser(bearerToken);
-        MaintenanceDto createdMaintenance = this.maintenanceManager.createMaintenance(maintenanceDto);
+        MaintenanceDto createdMaintenance = this.maintenanceManager.createMaintenance(bearerToken, maintenanceDto);
         return new ResponseEntity<>(createdMaintenance, HttpStatus.CREATED);
     }
 
@@ -56,7 +56,7 @@ public class MaintenanceController {
     public ResponseEntity<Page<MaintenanceWithStationAndSessionsDto>> getAllMaintenancesWithStationAndSessions(@RequestHeader("Authorization") String bearerToken, @RequestParam int page, @RequestParam int size) {
         this.userManager.authenticatedUser(bearerToken);
         Pageable pageable = PageRequest.of(page, size);
-        Page<MaintenanceWithStationAndSessionsDto> maintenances = this.maintenanceManager.getAllMaintenancesWithStationAndSessions(pageable);
+        Page<MaintenanceWithStationAndSessionsDto> maintenances = this.maintenanceManager.getAllMaintenancesWithStationAndSessions(bearerToken, pageable);
         return new ResponseEntity<>(maintenances, HttpStatus.OK);
     }
 }

@@ -13,4 +13,5 @@ import java.util.List;
 @NoArgsConstructor
 public class Station {
     public List<ChargingPort> chargingPorts;
+    public String status;
 }

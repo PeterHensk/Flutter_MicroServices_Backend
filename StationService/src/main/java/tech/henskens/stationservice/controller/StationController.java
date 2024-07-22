@@ -61,10 +61,10 @@ public class StationController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PutMapping("/{stationIdentifier}/port/{portIdentifier}")
-    public ResponseEntity<Void> updateChargingPortStatus(@RequestHeader("Authorization") String bearerToken,@PathVariable String stationIdentifier, @PathVariable String portIdentifier, @RequestBody ChargingPortStatusDto statusDto) {
+    @PutMapping("/updateStationPort")
+    public ResponseEntity<Void> updateChargingPortStatus(@RequestHeader("Authorization") String bearerToken, @RequestBody ChargingPortStatusDto statusDto) {
         this.userManager.authenticatedUser(bearerToken);
-        stationManager.updateChargingPortStatus(stationIdentifier, portIdentifier, statusDto);
+        stationManager.updateChargingPortStatus(statusDto.getStationIdentifier(), statusDto.getPortIdentifier(), statusDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

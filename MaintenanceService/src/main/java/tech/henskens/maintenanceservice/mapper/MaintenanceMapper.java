@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import tech.henskens.maintenanceservice.dto.maintenance.MaintenanceDto;
 import tech.henskens.maintenanceservice.dto.maintenance.MaintenanceWithStationAndSessionsDto;
 import tech.henskens.maintenanceservice.dto.station.StationDto;
+import tech.henskens.maintenanceservice.dto.station.ChargingPortStatusDto;
 import tech.henskens.maintenanceservice.model.Maintenance;
 
 @Component
@@ -57,8 +58,19 @@ public class MaintenanceMapper {
     public MaintenanceWithStationAndSessionsDto toMaintenanceWithStationAndSessionsDto(Maintenance maintenance, StationDto station, Integer totalCompletedSessions) {
         MaintenanceWithStationAndSessionsDto dto = new MaintenanceWithStationAndSessionsDto();
         dto.setCreationDate(maintenance.getCreationDate());
+        dto.setMaintenanceDate(maintenance.getMaintenanceDate());
+        dto.setStatus(maintenance.getStatus());
+        dto.setIssueCategory(maintenance.getIssueCategory());
+        dto.setIssueDescription(maintenance.getIssueDescription());
         dto.setStation(station);
         dto.setTotalCompletedSessions(totalCompletedSessions);
+        return dto;
+    }
+
+    public static ChargingPortStatusDto toChargingPortStatusDtoFromSession(Maintenance maintenance, String status) {
+        ChargingPortStatusDto dto = new ChargingPortStatusDto();
+        dto.setStationIdentifier(maintenance.getStationIdentifier());
+        dto.setStatus(status);
         return dto;
     }
 }

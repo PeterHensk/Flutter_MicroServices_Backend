@@ -15,6 +15,7 @@ import tech.henskens.sessionservice.dto.session.DateRangeDto;
 import tech.henskens.sessionservice.dto.session.SessionDto;
 import tech.henskens.sessionservice.dto.session.StartSessionDto;
 import tech.henskens.sessionservice.dto.station.ChargingPortDto;
+import tech.henskens.sessionservice.dto.station.ChargingPortStatusDto;
 import tech.henskens.sessionservice.manager.station.IStationManager;
 import tech.henskens.sessionservice.mapper.session.SessionMapper;
 import tech.henskens.sessionservice.model.Car;
@@ -87,7 +88,10 @@ public class SessionManager implements ISessionManager {
         if (!"AVAILABLE".equals(portStatus)) {
             throw new IllegalArgumentException("Port is not available for charging.");
         }
-        this.stationManager.updateChargingPortStatus(token, startSessionDto.getStationIdentifier(), startSessionDto.getPortIdentifier(), "IN_USE");
+
+        Session updateSession = sessionMapper.toSessionFromStartSessionDto(startSessionDto, existingUser, existingCar);
+        ChargingPortStatusDto chargingPortStatusDto = SessionMapper.toChargingPortStatusDtoFromSession(updateSession, "IN_USE");
+        this.stationManager.updateChargingPortStatus(token, chargingPortStatusDto);
 
         Session session = sessionMapper.toSessionFromStartSessionDto(startSessionDto, existingUser, existingCar);
         session = this.sessionRepository.save(session);
@@ -109,7 +113,8 @@ public class SessionManager implements ISessionManager {
         long seconds = Duration.between(session.getStarted(), now).getSeconds();
         session.setKwh(seconds * 0.002);
 
-        this.stationManager.updateChargingPortStatus(token, session.getStationIdentifier(), session.getPortIdentifier(), "AVAILABLE");
+        ChargingPortStatusDto chargingPortStatusDto = SessionMapper.toChargingPortStatusDtoFromSession(session, "AVAILABLE");
+        this.stationManager.updateChargingPortStatus(token, chargingPortStatusDto);
 
         session = this.sessionRepository.save(session);
         SessionDto sessionDto = this.sessionMapper.toSessionDto(session);

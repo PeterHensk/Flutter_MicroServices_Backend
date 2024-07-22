@@ -6,7 +6,7 @@ import tech.henskens.maintenanceservice.dto.maintenance.MaintenanceDto;
 import tech.henskens.maintenanceservice.dto.maintenance.MaintenanceWithStationAndSessionsDto;
 
 public interface IMaintenanceManager {
-    MaintenanceDto createMaintenance(MaintenanceDto maintenanceDto);
+    MaintenanceDto createMaintenance(String token, MaintenanceDto maintenanceDto);
 
     MaintenanceDto updateMaintenance(MaintenanceDto maintenanceDto);
 
@@ -14,5 +14,5 @@ public interface IMaintenanceManager {
 
     void deleteMaintenance(Long id);
 
-    Page<MaintenanceWithStationAndSessionsDto> getAllMaintenancesWithStationAndSessions(Pageable pageable);
+    Page<MaintenanceWithStationAndSessionsDto> getAllMaintenancesWithStationAndSessions(String token, Pageable pageable);
 }

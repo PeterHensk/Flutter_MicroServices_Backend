@@ -9,6 +9,7 @@ import tech.henskens.sessionservice.dto.session.CreateSessionDto;
 import tech.henskens.sessionservice.dto.session.DateRangeDto;
 import tech.henskens.sessionservice.dto.session.SessionDto;
 import tech.henskens.sessionservice.dto.session.StartSessionDto;
+import tech.henskens.sessionservice.dto.station.ChargingPortStatusDto;
 import tech.henskens.sessionservice.model.Car;
 import tech.henskens.sessionservice.model.Session;
 import tech.henskens.sessionservice.model.User;
@@ -76,6 +77,14 @@ public class SessionMapper {
         session.setPortIdentifier(startSessionDto.getPortIdentifier());
         session.setStarted(LocalDateTime.now());
         return session;
+    }
+
+    public static ChargingPortStatusDto toChargingPortStatusDtoFromSession(Session session, String status) {
+        ChargingPortStatusDto dto = new ChargingPortStatusDto();
+        dto.setStationIdentifier(session.getStationIdentifier());
+        dto.setPortIdentifier(session.getPortIdentifier());
+        dto.setStatus(status);
+        return dto;
     }
 }
 

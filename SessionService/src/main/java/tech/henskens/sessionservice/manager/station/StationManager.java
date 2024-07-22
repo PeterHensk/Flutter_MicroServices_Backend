@@ -2,15 +2,18 @@ package tech.henskens.sessionservice.manager.station;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpEntity;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import tech.henskens.sessionservice.dto.station.ChargingPortDto;
+import tech.henskens.sessionservice.dto.station.ChargingPortStatusDto;
 
 @Service
 public class StationManager implements IStationManager {
@@ -31,12 +34,14 @@ public class StationManager implements IStationManager {
         return Optional.ofNullable(response.getBody());
     }
 
-    public void updateChargingPortStatus(String token,String stationIdentifier, String portIdentifier, String status) {
-        String url = String.format("%s/station/%s/port/%s", this.stationdbBackendUrl, stationIdentifier, portIdentifier);
+    public void updateChargingPortStatus(String token, ChargingPortStatusDto chargingPortStatusDto) {
+        String url = String.format("%s/station/updateStationPort", this.stationdbBackendUrl);
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", token);
         Map<String, String> updates = new HashMap<>();
-        updates.put("status", status);
+        updates.put("stationIdentifier", chargingPortStatusDto.getStationIdentifier());
+        updates.put("portIdentifier", chargingPortStatusDto.getPortIdentifier());
+        updates.put("status", chargingPortStatusDto.getStatus());
         HttpEntity<Map<String, String>> entity = new HttpEntity<>(updates, headers);
         this.restTemplate.exchange(url, HttpMethod.PUT, entity, Void.class);
     }

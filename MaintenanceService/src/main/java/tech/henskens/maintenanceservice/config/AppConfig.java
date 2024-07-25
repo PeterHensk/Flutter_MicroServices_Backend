@@ -56,8 +56,8 @@ public class AppConfig implements WebMvcConfigurer {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorizeRequests -> {
-                    /*authorizeRequests.requestMatchers("/car/**").permitAll();*/
-                    authorizeRequests.requestMatchers("/user/**", "/session/**", "/car/**").authenticated();
+                    /*authorizeRequests.requestMatchers("/maintenance/**").permitAll();*/
+                    authorizeRequests.requestMatchers("/maintenance/**").authenticated();
                     authorizeRequests.anyRequest().authenticated();
                 })
                 .csrf(AbstractHttpConfigurer::disable)

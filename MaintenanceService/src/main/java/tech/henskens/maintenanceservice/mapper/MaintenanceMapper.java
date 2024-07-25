@@ -57,6 +57,7 @@ public class MaintenanceMapper {
 
     public MaintenanceWithStationAndSessionsDto toMaintenanceWithStationAndSessionsDto(Maintenance maintenance, StationDto station, Integer totalCompletedSessions) {
         MaintenanceWithStationAndSessionsDto dto = new MaintenanceWithStationAndSessionsDto();
+        dto.setId(maintenance.getId());
         dto.setCreationDate(maintenance.getCreationDate());
         dto.setMaintenanceDate(maintenance.getMaintenanceDate());
         dto.setStatus(maintenance.getStatus());

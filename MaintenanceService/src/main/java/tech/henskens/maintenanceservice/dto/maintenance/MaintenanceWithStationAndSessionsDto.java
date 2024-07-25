@@ -13,6 +13,7 @@ import tech.henskens.maintenanceservice.model.Status;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MaintenanceWithStationAndSessionsDto {
+    private Long id;
     private LocalDateTime creationDate;
     private LocalDateTime maintenanceDate;
     private Status status;

@@ -57,7 +57,8 @@ public class SessionController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<SessionDto>> getAllSessions(Pageable pageable) {
+    public ResponseEntity<Page<SessionDto>> getAllSessions(@RequestHeader("Authorization") String bearerToken,Pageable pageable) {
+        this.userManager.authenticatedUser(bearerToken);
         return ResponseEntity.ok(sessionManager.getAllSessions(pageable));
     }
 

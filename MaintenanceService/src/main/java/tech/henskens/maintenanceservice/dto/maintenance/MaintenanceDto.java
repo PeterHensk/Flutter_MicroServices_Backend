@@ -1,6 +1,7 @@
 package tech.henskens.maintenanceservice.dto.maintenance;
 
 import java.time.LocalDateTime;
+
 import tech.henskens.maintenanceservice.model.IssueCategory;
 import tech.henskens.maintenanceservice.model.Status;
 import lombok.*;

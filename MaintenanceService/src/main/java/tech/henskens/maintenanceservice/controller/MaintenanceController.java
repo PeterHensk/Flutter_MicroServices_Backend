@@ -33,16 +33,8 @@ public class MaintenanceController {
     public ResponseEntity<MaintenanceDto> updateMaintenance(@RequestHeader("Authorization") String bearerToken, @PathVariable Long id, @RequestBody MaintenanceDto maintenanceDto) {
         this.userManager.authenticatedUser(bearerToken);
         maintenanceDto.setId(id);
-        MaintenanceDto updatedMaintenance = this.maintenanceManager.updateMaintenance(maintenanceDto);
+        MaintenanceDto updatedMaintenance = this.maintenanceManager.updateMaintenance(bearerToken, maintenanceDto);
         return new ResponseEntity<>(updatedMaintenance, HttpStatus.OK);
-    }
-
-    @GetMapping
-    public ResponseEntity<Page<MaintenanceDto>> getAllMaintenances(@RequestHeader("Authorization") String bearerToken, @RequestParam int page, @RequestParam int size) {
-        this.userManager.authenticatedUser(bearerToken);
-        Pageable pageable = PageRequest.of(page, size);
-        Page<MaintenanceDto> maintenances = this.maintenanceManager.getAllMaintenances(pageable);
-        return new ResponseEntity<>(maintenances, HttpStatus.OK);
     }
 
     @DeleteMapping({"/{id}"})

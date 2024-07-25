@@ -22,7 +22,6 @@ public class SessionManager implements ISessionManager {
         this.restTemplate = restTemplate;
     }
 
-    
 
     public Optional<SessionCountDto> getSessionCount(String token, String stationIdentifier, LocalDateTime startDate, LocalDateTime endDate) {
         String url = String.format("%s/session/count?startDate=%s&endDate=%s&stationIdentifier=%s", this.sessionBackendUrl, startDate.toString(), endDate.toString(), stationIdentifier);

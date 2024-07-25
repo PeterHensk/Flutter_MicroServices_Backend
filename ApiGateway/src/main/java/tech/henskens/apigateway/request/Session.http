@@ -1,0 +1,18 @@
+﻿### Create session 1
+POST http://localhost:8081/session
+Content-Type: application/json
+
+{
+  "carId": 1,
+  "userId": 1,
+  "stationIdentifier": "station-1",
+  "portIdentifier": "1",
+  "kwh": 12,
+  "started": "2024-03-01T10:30:00",
+  "ended": "2024-03-01T12:35:00"
+}
+
+### POST request to /whoami endpoint
+POST http://localhost:8080/whoami
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjBjYjQyNzQyYWU1OGY0ZGE0NjdiY2RhZWE0Yjk1YTI5ZmJhMGM1ZjkiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiUGV0ZXIgSGVuc2tlbnMiLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jSUw5bGNBaTNIbXA4QlBVOERIdE1oVE9BYXp2STFnbGE1b0kyZnJpYkFXd0FnRUp3PXM5Ni1jIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL3VzZXJzZXJ2aWNlLTQyMzUwNiIsImF1ZCI6InVzZXJzZXJ2aWNlLTQyMzUwNiIsImF1dGhfdGltZSI6MTcyMTg5NzU5MSwidXNlcl9pZCI6IkswN21EU01LNXFhRW42TldScEVyMXFTY1hwRjMiLCJzdWIiOiJLMDdtRFNNSzVxYUVuNk5XUnBFcjFxU2NYcEYzIiwiaWF0IjoxNzIxODk3NTkxLCJleHAiOjE3MjE5MDExOTEsImVtYWlsIjoicGV0ZXIuaGVuc2tlbnNAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZ29vZ2xlLmNvbSI6WyIxMDA5NDcxNDIwNzU4NDkzMzA0NzciXSwiZW1haWwiOlsicGV0ZXIuaGVuc2tlbnNAZ21haWwuY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoiZ29vZ2xlLmNvbSJ9fQ.eBf62Tg-8OMxEfvVD1eiMntwtroyin1wXlxAYaK2sdfUCNfFT4Xg0ZPJKn4s4vIZ7q9pWjXlleqIG0nTx9lsRR9FIpY4uG790rP6qhYki1EcP-7mWSWMyIPXytd30B4i7hvDrBnjAnK4KAS6PWk8qksO3jQWKZ6s7di3WX7DQq4Qgx9cgAn7uvvxHuK2fH5lTxrIwyvI4CiPTswEm6MKc_zXA36D2xZjjUqUwjQDJalUorz-2AC6eHaE6NoREO8hiFrCIdTksjffCFMhY4KW1jzyXnMsY4Ir9kaaru1HI0zy6Pq1Uwyd4GYhwDdFqZQEVQidn35XwCWc7e_R-frFTA

@@ -20,6 +20,7 @@ import tech.henskens.maintenanceservice.manager.session.ISessionManager;
 import tech.henskens.maintenanceservice.manager.station.IStationManager;
 import tech.henskens.maintenanceservice.mapper.MaintenanceMapper;
 import tech.henskens.maintenanceservice.model.Maintenance;
+import tech.henskens.maintenanceservice.model.Status;
 import tech.henskens.maintenanceservice.repository.IMaintenanceRepository;
 import tech.henskens.maintenanceservice.dto.station.ChargingPortStatusDto;
 
@@ -49,10 +50,22 @@ public class MaintenanceManager implements IMaintenanceManager {
         return this.maintenanceMapper.toMaintenanceDto(savedMaintenance);
     }
 
-    public MaintenanceDto updateMaintenance(MaintenanceDto maintenanceDto) {
+    public MaintenanceDto updateMaintenance(String token, MaintenanceDto maintenanceDto) {
         Maintenance existingMaintenance = this.maintenanceRepository.findById(maintenanceDto.getId()).orElseThrow(() -> new NoSuchElementException("Maintenance with id " + maintenanceDto.getId() + " not found"));
         this.maintenanceMapper.updateMaintenance(existingMaintenance, maintenanceDto);
         Maintenance updatedMaintenance = this.maintenanceRepository.save(existingMaintenance);
+
+        if (maintenanceDto.getStatus() == Status.COMPLETED) {
+            ChargingPortStatusDto chargingPortStatusDto = new ChargingPortStatusDto();
+            chargingPortStatusDto.setStationIdentifier(updatedMaintenance.getStationIdentifier());
+            chargingPortStatusDto.setStatus("AVAILABLE");
+
+            for (int i = 1; i <= 4; i++) {
+                chargingPortStatusDto.setPortIdentifier(Integer.toString(i));
+                this.stationManager.updateChargingPortStatus(token, chargingPortStatusDto);
+            }
+        }
+
         return this.maintenanceMapper.toMaintenanceDto(updatedMaintenance);
     }
 

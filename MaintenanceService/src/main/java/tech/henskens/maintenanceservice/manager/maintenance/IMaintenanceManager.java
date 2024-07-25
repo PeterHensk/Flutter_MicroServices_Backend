@@ -8,7 +8,7 @@ import tech.henskens.maintenanceservice.dto.maintenance.MaintenanceWithStationAn
 public interface IMaintenanceManager {
     MaintenanceDto createMaintenance(String token, MaintenanceDto maintenanceDto);
 
-    MaintenanceDto updateMaintenance(MaintenanceDto maintenanceDto);
+    MaintenanceDto updateMaintenance(String token, MaintenanceDto maintenanceDto);
 
     Page<MaintenanceDto> getAllMaintenances(Pageable pageable);
 

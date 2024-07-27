@@ -9,27 +9,22 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import tech.henskens.sessionservice.dto.session.DateRangeDto;
 import tech.henskens.sessionservice.dto.session.SessionDto;
 import tech.henskens.sessionservice.dto.session.StartSessionDto;
 import tech.henskens.sessionservice.dto.station.ChargingPortDto;
-import tech.henskens.sessionservice.manager.station.IStationManager;
+import tech.henskens.sessionservice.manager.station.StationManager;
 import tech.henskens.sessionservice.mapper.session.SessionMapper;
 import tech.henskens.sessionservice.model.Car;
 import tech.henskens.sessionservice.dto.car.CarDto;
-import tech.henskens.sessionservice.model.ChargingPort;
 import tech.henskens.sessionservice.model.Session;
 import tech.henskens.sessionservice.model.User;
 import tech.henskens.sessionservice.repository.ICarRepository;
 import tech.henskens.sessionservice.repository.ISessionRepository;
 import tech.henskens.sessionservice.repository.IUserRepository;
-
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -51,11 +46,10 @@ public class SessionManagerTest {
     private SessionMapper sessionMapper;
 
     @Mock
-    private IStationManager stationManager;
+    private StationManager stationManager;
 
     @InjectMocks
     private SessionManager sessionManager;
-
 
     @Test
     public void testUpdateSession() {
@@ -120,6 +114,7 @@ public class SessionManagerTest {
 
     @Test
     public void testStartSession() {
+        // Given
         String token = "token";
         User authenticatedUser = new User();
         authenticatedUser.setId(1L);
@@ -135,6 +130,8 @@ public class SessionManagerTest {
 
         ChargingPortDto chargingPortDto = new ChargingPortDto();
         chargingPortDto.setStatus("AVAILABLE");
+
+        // Set up mocks
         when(stationManager.getChargingPort(token, startSessionDto.getStationIdentifier(), startSessionDto.getPortIdentifier())).thenReturn(Optional.of(chargingPortDto));
         when(userRepository.findById(authenticatedUser.getId())).thenReturn(Optional.of(existingUser));
         when(carRepository.findByLicensePlate(startSessionDto.getLicensePlate())).thenReturn(Optional.of(existingCar));
@@ -142,10 +139,13 @@ public class SessionManagerTest {
         when(sessionRepository.save(session)).thenReturn(session);
         when(sessionMapper.toSessionDto(session)).thenReturn(sessionDto);
 
-        ResponseEntity<SessionDto> result = sessionManager.startSession(token, authenticatedUser, startSessionDto);
+        // When
+        ResponseEntity<SessionDto> response = sessionManager.startSession(token, authenticatedUser, startSessionDto);
 
-        assertEquals(HttpStatus.CREATED, result.getStatusCode());
-        assertEquals(sessionDto, result.getBody());
+        // Then
+        assertNotNull(response, "Response should not be null");
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals(sessionDto, response.getBody());
     }
 
     @Test

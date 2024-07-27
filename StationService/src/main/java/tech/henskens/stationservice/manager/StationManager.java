@@ -29,7 +29,7 @@ public class StationManager implements IStationManager {
         this.stationMapper = stationMapper;
     }
 
-    private Optional<ChargingPort> findChargingPort(String stationIdentifier, String portIdentifier) {
+    public Optional<ChargingPort> findChargingPort(String stationIdentifier, String portIdentifier) {
         Optional<Station> station = this.stationRepository.findByStationIdentifier(stationIdentifier);
         return station.flatMap(s -> s.getChargingPorts().stream()
                 .filter(port -> port.getPortIdentifier().equals(portIdentifier))
@@ -50,6 +50,7 @@ public class StationManager implements IStationManager {
         Page<Station> stations = this.stationRepository.findAll(pageable);
         return stations.map(this.stationMapper::stationToDto);
     }
+    
     public Optional<ChargingPortDto> getChargingPort(String stationIdentifier, String portIdentifier) {
         Optional<ChargingPort> chargingPort = this.findChargingPort(stationIdentifier, portIdentifier);
         StationMapper mapper = this.stationMapper;

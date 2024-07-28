@@ -7,6 +7,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -38,6 +40,8 @@ public class MaintenanceManager implements IMaintenanceManager {
         this.sessionManager = sessionManager;
     }
 
+    @Override
+    @CacheEvict(value = "maintenances", allEntries = true)
     public MaintenanceDto createMaintenance(String token, MaintenanceDto maintenanceDto) {
         Maintenance maintenance = this.maintenanceMapper.toMaintenance(maintenanceDto);
         Maintenance savedMaintenance = this.maintenanceRepository.save(maintenance);
@@ -50,6 +54,7 @@ public class MaintenanceManager implements IMaintenanceManager {
         return this.maintenanceMapper.toMaintenanceDto(savedMaintenance);
     }
 
+    @Override
     public MaintenanceDto updateMaintenance(String token, MaintenanceDto maintenanceDto) {
         Maintenance existingMaintenance = this.maintenanceRepository.findById(maintenanceDto.getId()).orElseThrow(() -> new NoSuchElementException("Maintenance with id " + maintenanceDto.getId() + " not found"));
         this.maintenanceMapper.updateMaintenance(existingMaintenance, maintenanceDto);
@@ -69,6 +74,7 @@ public class MaintenanceManager implements IMaintenanceManager {
         return this.maintenanceMapper.toMaintenanceDto(updatedMaintenance);
     }
 
+    @Override
     public Page<MaintenanceDto> getAllMaintenances(Pageable pageable) {
         Page<Maintenance> page = this.maintenanceRepository.findAll(pageable);
         MaintenanceMapper mapper = this.maintenanceMapper;
@@ -80,6 +86,8 @@ public class MaintenanceManager implements IMaintenanceManager {
         this.maintenanceRepository.deleteById(id);
     }
 
+    @Override
+    @Cacheable(value = "maintenances", key = "#pageable.pageNumber + '-' + #pageable.pageSize + '-' + #token")
     public Page<MaintenanceWithStationAndSessionsDto> getAllMaintenancesWithStationAndSessions(String token, Pageable pageable) {
         Page<Maintenance> maintenances = this.maintenanceRepository.findAll(pageable);
         List<MaintenanceWithStationAndSessionsDto> dtos = maintenances.stream().map((maintenance) -> {

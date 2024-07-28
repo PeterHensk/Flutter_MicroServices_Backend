@@ -25,6 +25,7 @@ public class FirebaseAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String authorizationHeader = request.getHeader("Authorization");
+        logger.info("Authorization Header: {}", authorizationHeader);
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String idToken = authorizationHeader.substring(7);
             try {
@@ -37,11 +38,16 @@ public class FirebaseAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } catch (Exception e) {
                 logger.error("Token verification failed", e);
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                return; // Stop processing further if token verification fails
             }
         } else {
             logger.warn("No authorization header or invalid format");
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return; // Stop processing further if no authorization header is present
         }
         filterChain.doFilter(request, response);
     }
+
 }
 

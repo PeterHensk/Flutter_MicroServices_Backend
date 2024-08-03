@@ -5,10 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import tech.henskens.stationservice.dto.ChargingPortDto;
-import tech.henskens.stationservice.dto.ChargingPortStatusDto;
-import tech.henskens.stationservice.dto.ImageUploadDto;
-import tech.henskens.stationservice.dto.StationDto;
+import tech.henskens.stationservice.dto.*;
 import tech.henskens.stationservice.manager.IS3Manager;
 import tech.henskens.stationservice.manager.IStationManager;
 import tech.henskens.stationservice.manager.Session.IUserManager;
@@ -33,7 +30,8 @@ public class StationController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createStation(@RequestBody StationDto stationDto) {
+    public ResponseEntity<Void> createStation(@RequestHeader("Authorization") String bearerToken, @RequestBody StationDto stationDto) {
+        this.userManager.authenticatedUser(bearerToken);
         stationManager.createStation(stationDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -79,5 +77,12 @@ public class StationController {
     @PostMapping("/upload-image")
     public String uploadImage(@RequestBody ImageUploadDto imageUploadDto) {
         return s3Manager.uploadImage(imageUploadDto.getImage(), imageUploadDto.getContentType());
+    }
+
+    @GetMapping("/load-image/{imageId}")
+    public ResponseEntity<ImageResponseDto> loadImage(@RequestHeader("Authorization") String bearerToken, @PathVariable String imageId) {
+        userManager.authenticatedUser(bearerToken);
+        ImageResponseDto imageResponse = s3Manager.loadImage(imageId);
+        return ResponseEntity.ok(imageResponse);
     }
 }

@@ -29,7 +29,6 @@ public class UserController {
 
     @PostMapping({"/whoami"})
     public ResponseEntity<CreateUserDto> whoAmI(@RequestHeader("Authorization") String bearerToken) throws Exception {
-        this.userManager.authenticatedUser(bearerToken);
         String idToken = bearerToken.substring(7);
         FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
         return this.userManager.handleUser(decodedToken);

@@ -5,6 +5,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
@@ -47,10 +48,12 @@ public class AppConfig implements WebMvcConfigurer {
         };
     }
 
+    @Value("${firebase.config.path}")
+    private String firebaseConfigPath;
     @Bean
     public FirebaseApp initializeFirebaseApp() throws IOException {
         logger.info("Initializing Firebase App...");
-        FileInputStream serviceAccount = new FileInputStream("src/main/resources/firebase-service-account.json");
+        FileInputStream serviceAccount = new FileInputStream(firebaseConfigPath);
         FirebaseOptions options = (new FirebaseOptions.Builder()).setCredentials(GoogleCredentials.fromStream(serviceAccount)).build();
         FirebaseApp app = FirebaseApp.initializeApp(options);
         logger.info("Firebase App initialized successfully.");

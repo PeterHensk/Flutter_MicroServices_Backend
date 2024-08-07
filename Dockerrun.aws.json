@@ -149,6 +149,26 @@
         { "name": "POSTGRES_USER", "value": "MaintenanceServiceAdmin" },
         { "name": "POSTGRES_PASSWORD", "value": "${MAINTENANCE_POSTGRES_PASSWORD}" }
       ]
+    },
+    {
+      "name": "flutter-app",
+      "image": "peterhenskens/ev-flutter-app:latest",
+      "essential": true,
+      "memory": 512,
+      "portMappings": [
+        {
+          "containerPort": 80,
+          "hostPort": 8080
+        }
+      ],
+      "environment": [
+        { "name": "API_GATEWAY_HOST", "value": "api-gateway" },
+        { "name": "API_GATEWAY_PORT", "value": "8084" },
+        { "name": "CLIENT_ID", "value": "${GOOGLE_CLIENT_ID}" }
+      ],
+      "dependsOn": [
+        "api-gateway"
+      ]
     }
   ]
 }

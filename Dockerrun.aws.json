@@ -1,0 +1,154 @@
+{
+  "AWSEBDockerrunVersion": 2,
+  "containerDefinitions": [
+    {
+      "name": "api-gateway",
+      "image": "peterhenskens/api-gateway:latest",
+      "essential": true,
+      "memory": 512,
+      "portMappings": [
+        {
+          "containerPort": 8084,
+          "hostPort": 8084
+        }
+      ],
+      "environment": [
+        { "name": "REDIS_DB_HOST", "value": "redis" },
+        { "name": "REDIS_DB_PORT", "value": "6379" },
+        { "name": "SESSION_SERVICE_HOST", "value": "session-service" },
+        { "name": "SESSION_SERVICE_PORT", "value": "8081" },
+        { "name": "STATION_SERVICE_HOST", "value": "station-service" },
+        { "name": "STATION_SERVICE_PORT", "value": "8082" },
+        { "name": "MAINTENANCE_SERVICE_HOST", "value": "maintenance-service" },
+        { "name": "MAINTENANCE_SERVICE_PORT", "value": "8083" }
+      ]
+    },
+    {
+      "name": "station-service",
+      "image": "peterhenskens/station-service:latest",
+      "essential": true,
+      "memory": 512,
+      "portMappings": [
+        {
+          "containerPort": 8082,
+          "hostPort": 8082
+        }
+      ],
+      "environment": [
+        { "name": "STATION_DB_HOST", "value": "station-mongo" },
+        { "name": "STATION_DB_PORT", "value": "27017" },
+        { "name": "STATION_DB_USER", "value": "admin" },
+        { "name": "STATION_DB_PASSWORD", "value": "${STATION_MONGO_INITDB_ROOT_PASSWORD}" },
+        { "name": "SESSION_SERVICE_HOST", "value": "session-service" },
+        { "name": "SESSION_SERVICE_PORT", "value": "8081" },
+        { "name": "AWS_ACCESS_KEY_ID", "value": "${AWS_ACCESS_KEY_ID}" },
+        { "name": "AWS_SECRET_KEY", "value": "${AWS_SECRET_KEY}" },
+        { "name": "AWS_REGION", "value": "${AWS_REGION}" }
+      ]
+    },
+    {
+      "name": "maintenance-service",
+      "image": "peterhenskens/maintenance-service:latest",
+      "essential": true,
+      "memory": 512,
+      "portMappings": [
+        {
+          "containerPort": 8083,
+          "hostPort": 8083
+        }
+      ],
+      "environment": [
+        { "name": "MAINTENANCE_DB_HOST", "value": "maintenance-postgres" },
+        { "name": "MAINTENANCE_DB_PORT", "value": "5432" },
+        { "name": "MAINTENANCE_DB_USER", "value": "MaintenanceServiceAdmin" },
+        { "name": "MAINTENANCE_DB_PASSWORD", "value": "${MAINTENANCE_POSTGRES_PASSWORD}" },
+        { "name": "STATION_SERVICE_HOST", "value": "station-service" },
+        { "name": "STATION_SERVICE_PORT", "value": "8082" },
+        { "name": "SESSION_SERVICE_HOST", "value": "session-service" },
+        { "name": "SESSION_SERVICE_PORT", "value": "8081" }
+      ]
+    },
+    {
+      "name": "session-service",
+      "image": "peterhenskens/session-service:latest",
+      "essential": true,
+      "memory": 512,
+      "portMappings": [
+        {
+          "containerPort": 8081,
+          "hostPort": 8081
+        }
+      ],
+      "environment": [
+        { "name": "SESSION_DB_HOST", "value": "session-postgres" },
+        { "name": "SESSION_DB_PORT", "value": "5432" },
+        { "name": "SESSION_DB_USER", "value": "SessionServiceAdmin" },
+        { "name": "SESSION_DB_PASSWORD", "value": "${SESSION_POSTGRES_PASSWORD}" },
+        { "name": "STATION_SERVICE_HOST", "value": "station-service" },
+        { "name": "STATION_SERVICE_PORT", "value": "8082" }
+      ]
+    },
+    {
+      "name": "redis",
+      "image": "redis:7.4-rc2",
+      "essential": true,
+      "memory": 512,
+      "portMappings": [
+        {
+          "containerPort": 6379,
+          "hostPort": 6379
+        }
+      ]
+    },
+    {
+      "name": "station-mongo",
+      "image": "mongo:7.0",
+      "essential": true,
+      "memory": 512,
+      "portMappings": [
+        {
+          "containerPort": 27017,
+          "hostPort": 27017
+        }
+      ],
+      "environment": [
+        { "name": "MONGO_INITDB_ROOT_USERNAME", "value": "admin" },
+        { "name": "MONGO_INITDB_ROOT_PASSWORD", "value": "${STATION_MONGO_INITDB_ROOT_PASSWORD}" }
+      ]
+    },
+    {
+      "name": "session-postgres",
+      "image": "postgres:16",
+      "essential": true,
+      "memory": 512,
+      "portMappings": [
+        {
+          "containerPort": 5432,
+          "hostPort": 5432
+        }
+      ],
+      "environment": [
+        { "name": "POSTGRES_DB", "value": "postgres" },
+        { "name": "POSTGRES_USER", "value": "SessionServiceAdmin" },
+        { "name": "POSTGRES_PASSWORD", "value": "${SESSION_POSTGRES_PASSWORD}" }
+      ]
+    },
+    {
+      "name": "maintenance-postgres",
+      "image": "postgres:16",
+      "essential": true,
+      "memory": 512,
+      "portMappings": [
+        {
+          "containerPort": 5433,
+          "hostPort": 5433
+        }
+      ],
+      "environment": [
+        { "name": "POSTGRES_DB", "value": "postgres" },
+        { "name": "POSTGRES_USER", "value": "MaintenanceServiceAdmin" },
+        { "name": "POSTGRES_PASSWORD", "value": "${MAINTENANCE_POSTGRES_PASSWORD}" }
+      ]
+    }
+  ]
+}

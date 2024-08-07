@@ -21,7 +21,17 @@
         { "name": "STATION_SERVICE_PORT", "value": "8082" },
         { "name": "MAINTENANCE_SERVICE_HOST", "value": "maintenance-service" },
         { "name": "MAINTENANCE_SERVICE_PORT", "value": "8083" }
-      ]
+      ],
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "curl -f http://localhost:8084/health || exit 1"
+        ],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 0
+      }
     },
     {
       "name": "station-service",
@@ -44,7 +54,17 @@
         { "name": "AWS_ACCESS_KEY_ID", "value": "${AWS_ACCESS_KEY_ID}" },
         { "name": "AWS_SECRET_KEY", "value": "${AWS_SECRET_KEY}" },
         { "name": "AWS_REGION", "value": "${AWS_REGION}" }
-      ]
+      ],
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "curl -f http://localhost:8082/health || exit 1"
+        ],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 0
+      }
     },
     {
       "name": "maintenance-service",
@@ -66,7 +86,17 @@
         { "name": "STATION_SERVICE_PORT", "value": "8082" },
         { "name": "SESSION_SERVICE_HOST", "value": "session-service" },
         { "name": "SESSION_SERVICE_PORT", "value": "8081" }
-      ]
+      ],
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "curl -f http://localhost:8083/health || exit 1"
+        ],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 0
+      }
     },
     {
       "name": "session-service",
@@ -86,7 +116,17 @@
         { "name": "SESSION_DB_PASSWORD", "value": "${SESSION_POSTGRES_PASSWORD}" },
         { "name": "STATION_SERVICE_HOST", "value": "station-service" },
         { "name": "STATION_SERVICE_PORT", "value": "8082" }
-      ]
+      ],
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "curl -f http://localhost:8081/health || exit 1"
+        ],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 0
+      }
     },
     {
       "name": "redis",
@@ -168,7 +208,17 @@
       ],
       "dependsOn": [
         "api-gateway"
-      ]
+      ],
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "curl -f http://localhost:80/health || exit 1"
+        ],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 0
+      }
     }
   ]
 }

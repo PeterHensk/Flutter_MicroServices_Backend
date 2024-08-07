@@ -29,26 +29,27 @@ jobs:
       - name: Build, test, and package StationService
         working-directory: ./StationService
         run: |
+          mkdir -p src/main/resources/
           echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}" > src/main/resources/firebase-service-account.json
           mvn clean package
 
       - name: Build, test, and package SessionService
         working-directory: ./SessionService
         run: |
+          mkdir -p src/main/resources/
           echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}" > src/main/resources/firebase-service-account.json
           mvn clean package
 
       - name: Build, test, and package MaintenanceService
         working-directory: ./MaintenanceService
         run: |
+          mkdir -p src/main/resources/
           echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}" > src/main/resources/firebase-service-account.json
           mvn clean package
 
       - name: Build, test, and package ApiGateway
         working-directory: ./ApiGateway
-        run: |
-          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}" > src/main/resources/firebase-service-account.json
-          mvn clean package
+        run: mvn clean package
 
       - name: Docker login
         run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin

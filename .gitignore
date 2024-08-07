@@ -68,3 +68,8 @@ firebase-service-account.json
 *.swo
 *.sublime-workspace
 *.sublime-project
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml

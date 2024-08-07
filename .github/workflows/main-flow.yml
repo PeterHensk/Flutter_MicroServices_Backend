@@ -1,0 +1,76 @@
+name: Build and deliver backend containers
+
+on: push
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    env:
+      MONGO_INITDB_ROOT_PASSWORD: ${{ secrets.STATION_MONGO_INITDB_ROOT_PASSWORD }}
+      SESSION_POSTGRES_PASSWORD: ${{ secrets.SESSION_POSTGRES_PASSWORD }}
+      MAINTENANCE_POSTGRES_PASSWORD: ${{ secrets.MAINTENANCE_POSTGRES_PASSWORD }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: 21
+          distribution: 'adopt'
+          cache: maven
+
+      - name: Build, test, and package StationService
+        working-directory: ./StationService
+        run: mvn clean package
+
+      - name: Build, test, and package SessionService
+        working-directory: ./SessionService
+        run: mvn clean package
+
+      - name: Build, test, and package MaintenanceService
+        working-directory: ./MaintenanceService
+        run: mvn clean package
+
+      - name: Build, test, and package ApiGateway
+        working-directory: ./ApiGateway
+        run: mvn clean package
+
+      - name: Docker login
+        run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
+
+      - name: Docker Build and Push StationService
+        run: |
+          docker build -t ${{ secrets.DOCKER_USER }}/station-service:latest ./StationService
+          docker push ${{ secrets.DOCKER_USER }}/station-service:latest
+
+      - name: Docker Build and Push SessionService
+        run: |
+          docker build -t ${{ secrets.DOCKER_USER }}/session-service:latest ./SessionService
+          docker push ${{ secrets.DOCKER_USER }}/session-service:latest
+
+      - name: Docker Build and Push MaintenanceService
+        run: |
+          docker build -t ${{ secrets.DOCKER_USER }}/maintenance-service:latest ./MaintenanceService
+          docker push ${{ secrets.DOCKER_USER }}/maintenance-service:latest
+
+      - name: Docker Build and Push ApiGateway
+        run: |
+          docker build -t ${{ secrets.DOCKER_USER }}/api-gateway:latest ./ApiGateway
+          docker push ${{ secrets.DOCKER_USER }}/api-gateway:latest
+
+      - name: Deploy with docker-compose
+        run: |
+          echo "MONGO_INITDB_ROOT_PASSWORD=${{ secrets.STATION_MONGO_INITDB_ROOT_PASSWORD }}" >> .env
+          echo "SESSION_POSTGRES_PASSWORD=${{ secrets.SESSION_POSTGRES_PASSWORD }}" >> .env
+          echo "MAINTENANCE_POSTGRES_PASSWORD=${{ secrets.MAINTENANCE_POSTGRES_PASSWORD }}" >> .env
+          echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> .env
+          echo "AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY }}" >> .env
+          echo "AWS_REGION=${{ secrets.AWS_REGION }}" >> .env
+          echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
+          docker-compose -f docker-compose.yml up -d --build

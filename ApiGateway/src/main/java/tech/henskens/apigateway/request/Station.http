@@ -1,0 +1,23 @@
+### get all stations
+GET http://localhost:8084/station
+Content-Type: application/json
+
+### get station by id
+GET http://localhost:8084/station/station-1
+Content-Type: application/json
+
+### get station with a port
+GET http://localhost:8084/station/station-123/port/port-1
+
+### update a port status
+PUT http://localhost:8084/station/station-123/port/port-1
+Content-Type: application/json
+
+{
+  "status": "DAMAGED"
+}
+
+### get image of statio### get image of station
+GET http://localhost:8084/station/load-image/139c0448-1411-439f-99d2-3e50df87a19b
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjFkYmUwNmI1ZDdjMmE3YzA0NDU2MzA2MWZmMGZlYTM3NzQwYjg2YmMiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiUGV0ZXIgSGVuc2tlbnMiLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jSUw5bGNBaTNIbXA4QlBVOERIdE1oVE9BYXp2STFnbGE1b0kyZnJpYkFXd0FnRUp3PXM5Ni1jIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL3VzZXJzZXJ2aWNlLTQyMzUwNiIsImF1ZCI6InVzZXJzZXJ2aWNlLTQyMzUwNiIsImF1dGhfdGltZSI6MTcyMjc2OTU2NSwidXNlcl9pZCI6IkswN21EU01LNXFhRW42TldScEVyMXFTY1hwRjMiLCJzdWIiOiJLMDdtRFNNSzVxYUVuNk5XUnBFcjFxU2NYcEYzIiwiaWF0IjoxNzIyNzY5NTY1LCJleHAiOjE3MjI3NzMxNjUsImVtYWlsIjoicGV0ZXIuaGVuc2tlbnNAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZ29vZ2xlLmNvbSI6WyIxMDA5NDcxNDIwNzU4NDkzMzA0NzciXSwiZW1haWwiOlsicGV0ZXIuaGVuc2tlbnNAZ21haWwuY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoiZ29vZ2xlLmNvbSJ9fQ.kch81OrvzHtb79nV1dAN7IuYPjeuK4jSsO-fr4C4CXsPmxgQFsaya_8LeIanq3U_bd-o2mnTLslCk5ulMPwVnVlwnVvtaRHet5Ip73ECSDRcRGAsoied7tI80phEtR-IErDO4xcCXj4vEyo2LX22xCz02khPElVsPFoexBZyQq9S6yyf7IuFnl2VwE1ndYpa-I7hZlZ-ekDAUEzTyfrBxqnywMS78asxSl8OKOzMh1ztLe7FQt1Qc0P544-yGbeZNKBLgXnG2WBjp8qVQjI6qlX4y-EUvYeqxggmWK-FgTQcCctvS3Fp9olOJsNHax9KKrhm5NrlNz-iXFA-cyPRBw

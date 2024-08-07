@@ -1,0 +1,176 @@
+services:
+  station-mongo:
+    image: mongo:7.0
+    container_name: station-mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: ${STATION_MONGO_INITDB_ROOT_PASSWORD}
+    volumes:
+      - station-mongo-data:/data/db
+    networks:
+      - station-network
+
+  session-postgres:
+    image: postgres:16
+    container_name: session-postgres
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: SessionServiceAdmin
+      POSTGRES_PASSWORD: ${SESSION_POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - session-postgres-data:/var/lib/postgresql/data
+    networks:
+      - session-network
+
+  maintenance-postgres:
+    image: postgres:16
+    container_name: maintenance-postgres
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: MaintenanceServiceAdmin
+      POSTGRES_PASSWORD: ${MAINTENANCE_POSTGRES_PASSWORD}
+    ports:
+      - "5433:5432"
+    volumes:
+      - maintenance-postgres-data:/var/lib/postgresql/data
+    networks:
+        - maintenance-network
+
+  redis:
+    image: redis:7.4-rc2
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - redis-network
+
+  api-gateway:
+    image: peterhenskens/api-gateway
+    container_name: api-gateway
+    ports:
+      - "8084:8084"
+    environment:
+      - REDIS_DB_HOST=redis
+      - REDIS_DB_PORT=6379
+      - SESSION_SERVICE_HOST=session-service
+      - SESSION_SERVICE_PORT=8081
+      - STATION_SERVICE_HOST=station-service
+      - STATION_SERVICE_PORT=8082
+      - MAINTENANCE_SERVICE_HOST=maintenance-service
+      - MAINTENANCE_SERVICE_PORT=8083
+    depends_on:
+      - redis
+      - session-service
+      - station-service
+      - maintenance-service
+    networks:
+      - gateway-network
+      - session-network
+      - station-network
+      - maintenance-network
+      - redis-network
+
+  station-service:
+    image: peterhenskens/station-service
+    container_name: station-service
+    ports:
+      - "8082:8082"
+    environment:
+      - firebase.config.path=/app/src/main/resources/firebase-service-account.json
+      - STATION_DB_HOST=station-mongo
+      - STATION_DB_PORT=27017
+      - STATION_DB_USER=admin
+      - STATION_DB_PASSWORD=${STATION_MONGO_INITDB_ROOT_PASSWORD}
+      - SESSION_SERVICE_HOST=session-service
+      - SESSION_SERVICE_PORT=8081
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_KEY=${AWS_SECRET_KEY}
+      - AWS_REGION=${AWS_REGION}
+    depends_on:
+      - station-mongo
+      - session-service
+    networks:
+      - station-network
+      - session-network
+
+  maintenance-service:
+    image: peterhenskens/maintenance-service
+    container_name: maintenance-service
+    ports:
+      - "8083:8083"
+    environment:
+      - firebase.config.path=/app/src/main/resources/firebase-service-account.json
+      - MAINTENANCE_DB_HOST=maintenance-postgres
+      - MAINTENANCE_DB_PORT=5432
+      - MAINTENANCE_DB_USER=MaintenanceServiceAdmin
+      - MAINTENANCE_DB_PASSWORD=${MAINTENANCE_POSTGRES_PASSWORD}
+      - STATION_SERVICE_HOST=station-service
+      - STATION_SERVICE_PORT=8082
+      - SESSION_SERVICE_HOST=session-service
+      - SESSION_SERVICE_PORT=8081
+    depends_on:
+      - maintenance-postgres
+      - station-service
+      - session-service
+      - redis
+    networks:
+      - session-network
+      - maintenance-network
+      - station-network
+      - redis-network
+
+  session-service:
+    image: peterhenskens/session-service
+    container_name: session-service
+    ports:
+      - "8081:8081"
+    environment:
+      - firebase.config.path=/app/src/main/resources/firebase-service-account.json
+      - SESSION_DB_HOST=session-postgres
+      - SESSION_DB_PORT=5432
+      - SESSION_DB_USER=SessionServiceAdmin
+      - SESSION_DB_PASSWORD=${SESSION_POSTGRES_PASSWORD}
+      - STATION_SERVICE_HOST=station-service
+      - STATION_SERVICE_PORT=8082
+    depends_on:
+      - session-postgres
+    networks:
+      - session-network
+
+  flutter-app:
+    image: peterhenskens/ev-flutter-app
+    container_name: flutter-app
+    ports:
+      - "8080:80"
+    environment:
+        - API_GATEWAY_HOST=api-gateway
+        - API_GATEWAY_PORT=8084
+        - CLIENT_ID=${GOOGLE_CLIENT_ID}
+    depends_on:
+      - api-gateway
+    networks:
+        - gateway-network
+
+volumes:
+  station-mongo-data:
+  session-postgres-data:
+  maintenance-postgres-data:
+  redis-data:
+
+networks:
+  gateway-network:
+    driver: bridge
+  station-network:
+    driver: bridge
+  session-network:
+    driver: bridge
+  maintenance-network:
+    driver: bridge
+  redis-network:
+    driver: bridge

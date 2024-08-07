@@ -1,4 +1,4 @@
-﻿package tech.henskens.stationservice.dto;
+package tech.henskens.stationservice.dto;
 
 import lombok.*;
 

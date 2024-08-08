@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flutter-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flutter-app
+  template:
+    metadata:
+      labels:
+        app: flutter-app
+    spec:
+      containers:
+        - name: flutter-app
+          image: peterhenskens/ev-flutter-app
+          ports:
+            - containerPort: 80
+          env:
+            - name: API_GATEWAY_HOST
+              value: "api-gateway"
+            - name: API_GATEWAY_PORT
+              value: "8084"
+            - name: CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: google-secrets
+                  key: google-client-id

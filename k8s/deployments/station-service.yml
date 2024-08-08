@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: station-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: station-service
+  template:
+    metadata:
+      labels:
+        app: station-service
+    spec:
+      containers:
+        - name: station-service
+          image: peterhenskens/station-service
+          ports:
+            - containerPort: 8082
+          env:
+            - name: firebase.config.path
+              value: "/app/src/main/resources/firebase-service-account.json"
+            - name: STATION_DB_HOST
+              value: "station-mongo"
+            - name: STATION_DB_PORT
+              value: "27017"
+            - name: STATION_DB_USER
+              value: "admin"
+            - name: STATION_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secrets
+                  key: station-mongo-password
+            - name: SESSION_SERVICE_HOST
+              value: "session-service"
+            - name: SESSION_SERVICE_PORT
+              value: "8081"
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: aws-secrets
+                  key: access-key-id
+            - name: AWS_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aws-secrets
+                  key: secret-access-key
+            - name: AWS_REGION
+              value: "us-east-1"

@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maintenance-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: maintenance-service
+  template:
+    metadata:
+      labels:
+        app: maintenance-service
+    spec:
+      containers:
+        - name: maintenance-service
+          image: peterhenskens/maintenance-service
+          ports:
+            - containerPort: 8083
+          env:
+            - name: firebase.config.path
+              value: "/app/src/main/resources/firebase-service-account.json"
+            - name: MAINTENANCE_DB_HOST
+              value: "maintenance-postgres"
+            - name: MAINTENANCE_DB_PORT
+              value: "5432"
+            - name: MAINTENANCE_DB_USER
+              value: "MaintenanceServiceAdmin"
+            - name: MAINTENANCE_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secrets
+                  key: maintenance-postgres-password
+            - name: STATION_SERVICE_HOST
+              value: "station-service"
+            - name: STATION_SERVICE_PORT
+              value: "8082"
+            - name: SESSION_SERVICE_HOST
+              value: "session-service"
+            - name: SESSION_SERVICE_PORT
+              value: "8081"

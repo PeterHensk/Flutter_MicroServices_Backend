@@ -14,6 +14,10 @@ jobs:
       AWS_REGION: ${{ secrets.AWS_REGION }}
       GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
       FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+      GRAFANA_ADMIN_PASSWORD: ${{ secrets.GRAFANA_ADMIN_PASSWORD }}
+      DOCKER_USER: ${{ secrets.DOCKER_USER }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      KUBECONFIG: ${{ secrets.KUBECONFIG }}
 
     steps:
       - name: Check out repository
@@ -30,21 +34,21 @@ jobs:
         working-directory: ./StationService
         run: |
           mkdir -p src/main/resources/
-          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}" > src/main/resources/firebase-service-account.json
+          echo "${{ env.FIREBASE_SERVICE_ACCOUNT_JSON }}" > src/main/resources/firebase-service-account.json
           mvn clean package
 
       - name: Build, test, and package SessionService
         working-directory: ./SessionService
         run: |
           mkdir -p src/main/resources/
-          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}" > src/main/resources/firebase-service-account.json
+          echo "${{ env.FIREBASE_SERVICE_ACCOUNT_JSON }}" > src/main/resources/firebase-service-account.json
           mvn clean package
 
       - name: Build, test, and package MaintenanceService
         working-directory: ./MaintenanceService
         run: |
           mkdir -p src/main/resources/
-          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}" > src/main/resources/firebase-service-account.json
+          echo "${{ env.FIREBASE_SERVICE_ACCOUNT_JSON }}" > src/main/resources/firebase-service-account.json
           mvn clean package
 
       - name: Build, test, and package ApiGateway
@@ -52,43 +56,24 @@ jobs:
         run: mvn clean package
 
       - name: Docker login
-        run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
+        run: echo ${{ env.DOCKER_PASSWORD }} | docker login -u ${{ env.DOCKER_USER }} --password-stdin
 
       - name: Docker Build and Push StationService
         run: |
-          docker build -t ${{ secrets.DOCKER_USER }}/station-service:latest ./StationService
-          docker push ${{ secrets.DOCKER_USER }}/station-service:latest
+          docker build -t ${{ env.DOCKER_USER }}/station-service:latest ./StationService
+          docker push ${{ env.DOCKER_USER }}/station-service:latest
 
       - name: Docker Build and Push SessionService
         run: |
-          docker build -t ${{ secrets.DOCKER_USER }}/session-service:latest ./SessionService
-          docker push ${{ secrets.DOCKER_USER }}/session-service:latest
+          docker build -t ${{ env.DOCKER_USER }}/session-service:latest ./SessionService
+          docker push ${{ env.DOCKER_USER }}/session-service:latest
 
       - name: Docker Build and Push MaintenanceService
         run: |
-          docker build -t ${{ secrets.DOCKER_USER }}/maintenance-service:latest ./MaintenanceService
-          docker push ${{ secrets.DOCKER_USER }}/maintenance-service:latest
+          docker build -t ${{ env.DOCKER_USER }}/maintenance-service:latest ./MaintenanceService
+          docker push ${{ env.DOCKER_USER }}/maintenance-service:latest
 
       - name: Docker Build and Push ApiGateway
         run: |
-          docker build -t ${{ secrets.DOCKER_USER }}/api-gateway:latest ./ApiGateway
-          docker push ${{ secrets.DOCKER_USER }}/api-gateway:latest
-
-      - name: Install AWS CLI
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y awscli
-
-      - name: Install EB CLI
-        run: |
-          pip install awsebcli
-
-      - name: Deploy to Elastic Beanstalk
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-        run: |
-          eb init -p docker EV_Flutter --region $AWS_REGION
-          eb use EV-Flutter-env
-          eb deploy
+          docker build -t ${{ env.DOCKER_USER }}/api-gateway:latest ./ApiGateway
+          docker push ${{ env.DOCKER_USER }}/api-gateway:latest

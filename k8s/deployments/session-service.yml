@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: session-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: session-service
+  template:
+    metadata:
+      labels:
+        app: session-service
+    spec:
+      containers:
+        - name: session-service
+          image: peterhenskens/session-service
+          ports:
+            - containerPort: 8081
+          env:
+            - name: firebase.config.path
+              value: "/app/src/main/resources/firebase-service-account.json"
+            - name: SESSION_DB_HOST
+              value: "session-postgres"
+            - name: SESSION_DB_PORT
+              value: "5432"
+            - name: SESSION_DB_USER
+              value: "SessionServiceAdmin"
+            - name: SESSION_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secrets
+                  key: session-postgres-password
+            - name: STATION_SERVICE_HOST
+              value: "station-service"
+            - name: STATION_SERVICE_PORT
+              value: "8082"

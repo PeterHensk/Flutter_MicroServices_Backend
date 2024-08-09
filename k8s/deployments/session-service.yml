@@ -12,9 +12,13 @@ spec:
       labels:
         app: session-service
     spec:
+      initContainers:
+        - name: init-myservice
+          image: busybox
+          command: ['sh', '-c', 'printenv']
       containers:
         - name: session-service
-          image: peterhenskens/session-service
+          image: peterhenskens/session-service:latest
           ports:
             - containerPort: 8081
           env:
@@ -35,3 +39,4 @@ spec:
               value: "station-service"
             - name: STATION_SERVICE_PORT
               value: "8082"
+      restartPolicy: Always
